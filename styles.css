@@ -1,0 +1,221 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+h2 {
+    color: #34495e;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #3498db;
+    padding-bottom: 6px;
+    font-size: 1.3em;
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 8px;
+}
+
+label {
+    display: block;
+    margin-bottom: 2px;
+    font-weight: 600;
+    color: #555;
+    font-size: 13px;
+}
+
+input[type="text"],
+input[type="file"],
+textarea {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 13px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="checkbox"] {
+    margin-right: 8px;
+    transform: scale(1.2);
+}
+
+label:has(input[type="checkbox"]) {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #2c3e50;
+    cursor: pointer;
+    padding: 8px 0;
+}
+
+.government-name-field {
+    display: none;
+}
+
+.government-name-field.enabled {
+    display: block;
+}
+
+input[type="text"]:focus,
+input[type="file"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+/* Country container styles */
+.country-item {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.country-item h3 {
+    margin-bottom: 8px;
+    color: #495057;
+    font-size: 1.1em;
+}
+
+.remove-country {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.remove-country:hover {
+    background: #c82333;
+}
+
+.country-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.country-row:has(.government-name-field:not(.enabled)) {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.country-row.full-width {
+    grid-template-columns: 1fr 1fr;
+}
+
+/* Button styles */
+.btn-primary,
+.btn-secondary {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    margin-right: 8px;
+    margin-bottom: 6px;
+}
+
+.btn-primary {
+    background: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2980b9;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.form-actions {
+    text-align: center;
+    margin: 15px 0;
+    padding-top: 12px;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Output section */
+.output-section {
+    margin-top: 15px;
+}
+
+#output {
+    min-height: 150px;
+    resize: vertical;
+    font-family: 'Courier New', monospace;
+    background-color: #f8f9fa;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+    .country-row {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .country-row:has(.government-name-field:not(.enabled)) {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .country-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .country-row.full-width {
+        grid-template-columns: 1fr;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+} 
