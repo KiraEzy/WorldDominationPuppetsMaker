@@ -17,6 +17,7 @@ class CountryFormatter {
         this.masterTagInput = document.getElementById('masterTag');
         this.puppetIdeologyInput = document.getElementById('puppetIdeology');
         this.enableGovernmentNameCheckbox = document.getElementById('enableGovernmentName');
+        this.enableLeaderFieldsCheckbox = document.getElementById('enableLeaderFields');
 
         // Add event listeners
         this.addCountryBtn.addEventListener('click', () => this.addCountry());
@@ -25,6 +26,7 @@ class CountryFormatter {
         this.copyEventBtn.addEventListener('click', () => this.copyToClipboard('event'));
         this.copyLocalizationBtn.addEventListener('click', () => this.copyToClipboard('localization'));
         this.enableGovernmentNameCheckbox.addEventListener('change', () => this.toggleGovernmentNameFields());
+        this.enableLeaderFieldsCheckbox.addEventListener('change', () => this.toggleLeaderFields());
 
         // Add first country by default
         this.addCountry();
@@ -49,13 +51,24 @@ class CountryFormatter {
                     <label for="stateIds_${countryId}">State IDs:</label>
                     <input type="text" id="stateIds_${countryId}" name="stateIds_${countryId}" placeholder="1,2,3,4" required>
                 </div>
-                <div class="form-group government-name-field ${this.enableGovernmentNameCheckbox.checked ? 'enabled' : ''}">
+                <div class="form-group government-name-field ${this.enableGovernmentNameCheckbox && this.enableGovernmentNameCheckbox.checked ? 'enabled' : ''}">
                     <label for="governmentName_${countryId}">Government Name:</label>
                     <input type="text" id="governmentName_${countryId}" name="governmentName_${countryId}">
                 </div>
                 <div class="form-group">
                     <label for="nationFullName_${countryId}">Nation Full Name:</label>
                     <input type="text" id="nationFullName_${countryId}" name="nationFullName_${countryId}" required>
+                </div>
+            </div>
+            
+            <div class="country-row leader-fields ${this.enableLeaderFieldsCheckbox && this.enableLeaderFieldsCheckbox.checked ? 'enabled' : ''}">
+                <div class="form-group">
+                    <label for="leaderName_${countryId}">Leader Name:</label>
+                    <input type="text" id="leaderName_${countryId}" name="leaderName_${countryId}">
+                </div>
+                <div class="form-group">
+                    <label for="leaderPortrait_${countryId}">Leader Portrait Path:</label>
+                    <input type="text" id="leaderPortrait_${countryId}" name="leaderPortrait_${countryId}" placeholder="gfx/leaders/TAG/Portrait_Name.png">
                 </div>
             </div>
         `;
@@ -77,9 +90,22 @@ class CountryFormatter {
 
     toggleGovernmentNameFields() {
         const governmentNameElements = document.querySelectorAll('.government-name-field');
-        const isEnabled = this.enableGovernmentNameCheckbox.checked;
+        const isEnabled = this.enableGovernmentNameCheckbox && this.enableGovernmentNameCheckbox.checked;
         
         governmentNameElements.forEach(element => {
+            if (isEnabled) {
+                element.classList.add('enabled');
+            } else {
+                element.classList.remove('enabled');
+            }
+        });
+    }
+
+    toggleLeaderFields() {
+        const leaderFieldsElements = document.querySelectorAll('.leader-fields');
+        const isEnabled = this.enableLeaderFieldsCheckbox && this.enableLeaderFieldsCheckbox.checked;
+        
+        leaderFieldsElements.forEach(element => {
             if (isEnabled) {
                 element.classList.add('enabled');
             } else {
@@ -154,9 +180,17 @@ class CountryFormatter {
         };
 
         // Only include government name if enabled
-        if (this.enableGovernmentNameCheckbox.checked) {
+        if (this.enableGovernmentNameCheckbox && this.enableGovernmentNameCheckbox.checked) {
             const governmentName = document.getElementById(`governmentName_${countryId}`).value.trim();
             result.governmentName = governmentName || null;
+        }
+
+        // Only include leader data if enabled
+        if (this.enableLeaderFieldsCheckbox && this.enableLeaderFieldsCheckbox.checked) {
+            const leaderName = document.getElementById(`leaderName_${countryId}`).value.trim();
+            const leaderPortrait = document.getElementById(`leaderPortrait_${countryId}`).value.trim();
+            result.leaderName = leaderName || null;
+            result.leaderPortrait = leaderPortrait || null;
         }
 
         return result;
@@ -167,16 +201,23 @@ class CountryFormatter {
                country.stateIds.length > 0 && 
                country.nationFullName;
         
+        let valid = basicValidation;
+        
         // If government name is enabled, validate it too
-        if (this.enableGovernmentNameCheckbox.checked) {
-            return basicValidation && country.governmentName;
+        if (this.enableGovernmentNameCheckbox && this.enableGovernmentNameCheckbox.checked) {
+            valid = valid && country.governmentName;
         }
         
-        return basicValidation;
+        // If leader fields are enabled, validate them too
+        if (this.enableLeaderFieldsCheckbox && this.enableLeaderFieldsCheckbox.checked) {
+            valid = valid && country.leaderName && country.leaderPortrait;
+        }
+        
+        return valid;
     }
 
     formatOutput(masterTag, puppetIdeology, countries) {
-        const generateTexasReleaseCode = (masterTag, targetTag, stateIds, governmentName, nationFullName) => {
+        const generateTexasReleaseCode = (masterTag, targetTag, stateIds, governmentName, nationFullName, leaderName, leaderPortrait) => {
             // Generate the state list for `available`
             const stateListAvailable = stateIds.map(stateId => 
                 `\t\t${stateId} = { owner = { OR = { original_tag = ${masterTag} is_subject_of = ${masterTag} } } }`
@@ -236,6 +277,15 @@ ${stateListCore}
 \t\t${targetTag} = { 
 \t\t\tset_cosmetic_tag = OTT_${targetTag}_OCC
 \t\t\tload_focus_tree = generic_focus            
+${leaderName && leaderPortrait ? `
+\t\t\tcreate_country_leader = {
+\t\t\t\tname = "${leaderName}"
+\t\t\t\tpicture = "${leaderPortrait}"
+\t\t\t\texpire = "1.1.1"
+\t\t\t\tideology = absolute_monarchy_subtype
+\t\t\t\ttraits = {
+\t\t\t\t}
+\t\t\t}` : ''}
 
 \t\t\tset_popularities = {
 \t\t\t\tsyndicalist = 5
@@ -274,7 +324,7 @@ ${stateListCore}
 }`;
 
             // Localization template
-            const localization = `OTT_${targetTag}_OCC:0 "${nationFullName}"\n\n${masterTag}_establish_rk_${targetTag}:0 "Establish ${nationFullName}"`;
+            const localization = `OTT_${targetTag}_OCC:0 "${nationFullName}"\n${masterTag}_establish_rk_${targetTag}:0 "Establish ${nationFullName}"`;
 
             return { eventCode, localization };
         };
@@ -292,7 +342,9 @@ ${stateListCore}
                  country.targetTag, 
                  country.stateIds, 
                  governmentName, 
-                 country.nationFullName
+                 country.nationFullName,
+                 country.leaderName,
+                 country.leaderPortrait
              );
              allEventCodes.push(eventCode);
              allLocalizations.push(localization);
@@ -309,6 +361,7 @@ ${stateListCore}
             this.masterTagInput.value = '';
             this.puppetIdeologyInput.value = '';
             this.enableGovernmentNameCheckbox.checked = false;
+            this.enableLeaderFieldsCheckbox.checked = false;
             this.countriesContainer.innerHTML = '';
             this.eventOutputTextarea.value = '';
             this.localizationOutputTextarea.value = '';

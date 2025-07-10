@@ -83,6 +83,15 @@ label:has(input[type="checkbox"]) {
     display: block;
 }
 
+.leader-fields {
+    display: none;
+}
+
+.leader-fields.enabled {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
 input[type="text"]:focus,
 input[type="file"]:focus,
 textarea:focus {
@@ -212,6 +221,10 @@ textarea:focus {
     }
     
     .country-row.full-width {
+        grid-template-columns: 1fr;
+    }
+    
+    .leader-fields.enabled {
         grid-template-columns: 1fr;
     }
     
