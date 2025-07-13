@@ -11,13 +11,25 @@ class CountryFormatter {
         this.clearBtn = document.getElementById('clearBtn');
         this.copyEventBtn = document.getElementById('copyEventBtn');
         this.copyLocalizationBtn = document.getElementById('copyLocalizationBtn');
+        this.copyCategoryBtn = document.getElementById('copyCategoryBtn');
         this.countriesContainer = document.getElementById('countriesContainer');
+        this.categoryOutputSection = document.getElementById('categoryOutputSection');
+        this.categoryOutputTextarea = document.getElementById('categoryOutput');
         this.eventOutputTextarea = document.getElementById('eventOutput');
         this.localizationOutputTextarea = document.getElementById('localizationOutput');
         this.masterTagInput = document.getElementById('masterTag');
         this.puppetIdeologyInput = document.getElementById('puppetIdeology');
         this.enableGovernmentNameCheckbox = document.getElementById('enableGovernmentName');
         this.enableLeaderFieldsCheckbox = document.getElementById('enableLeaderFields');
+        this.generateFullCodeCheckbox = document.getElementById('generateFullCode');
+        this.fullCodeSettings = document.getElementById('fullCodeSettings');
+        this.addFocusBtn = document.getElementById('addFocusBtn');
+        this.focusIdsTableBody = document.getElementById('focusIdsTableBody');
+        this.addPartyBtn = document.getElementById('addPartyBtn');
+        this.popularityTableBody = document.getElementById('popularityTableBody');
+        this.totalPopularitySpan = document.getElementById('totalPopularity');
+        this.validationMessageSpan = document.getElementById('validationMessage');
+        this.popularityChart = null;
 
         // Add event listeners
         this.addCountryBtn.addEventListener('click', () => this.addCountry());
@@ -25,11 +37,183 @@ class CountryFormatter {
         this.clearBtn.addEventListener('click', () => this.clearAll());
         this.copyEventBtn.addEventListener('click', () => this.copyToClipboard('event'));
         this.copyLocalizationBtn.addEventListener('click', () => this.copyToClipboard('localization'));
+        this.copyCategoryBtn.addEventListener('click', () => this.copyToClipboard('category'));
         this.enableGovernmentNameCheckbox.addEventListener('change', () => this.toggleGovernmentNameFields());
         this.enableLeaderFieldsCheckbox.addEventListener('change', () => this.toggleLeaderFields());
+        this.generateFullCodeCheckbox.addEventListener('change', () => this.toggleFullCodeGeneration());
+        this.addFocusBtn.addEventListener('click', () => this.addFocusRow());
+        this.addPartyBtn.addEventListener('click', () => this.addPartyRow());
+
+        // Initialize popularity settings
+        this.initializePopularitySettings();
 
         // Add first country by default
         this.addCountry();
+    }
+
+    initializePopularitySettings() {
+        // Default popularity values from the original code
+        const defaultParties = [
+            { name: 'syndicalist', popularity: 5.0 },
+            { name: 'social_democrat', popularity: 5.0 },
+            { name: 'social_liberal', popularity: 0.0 },
+            { name: 'market_liberal', popularity: 0.0 },
+            { name: 'social_conservative', popularity: 20.0 },
+            { name: 'authoritarian_democrat', popularity: 50.0 },
+            { name: 'paternal_autocrat', popularity: 10.0 },
+            { name: 'national_populist', popularity: 10.0 }
+        ];
+
+        // Add default parties to table
+        defaultParties.forEach(party => {
+            this.addPartyRow(party.name, party.popularity);
+        });
+
+        // Initialize pie chart
+        this.initializePieChart();
+        this.updatePopularityDisplay();
+    }
+
+    addPartyRow(partyName = '', popularity = 0.0) {
+        const row = document.createElement('tr');
+        const partyId = Date.now() + Math.random(); // Unique ID for each row
+        
+        row.innerHTML = `
+            <td>
+                <input type="text" class="party-input" value="${partyName}" 
+                       placeholder="Party name" data-party-id="${partyId}">
+            </td>
+            <td>
+                <input type="number" class="popularity-input" value="${popularity}" 
+                       min="0" max="100" step="0.1" data-party-id="${partyId}">
+            </td>
+            <td>
+                <button type="button" class="remove-party-btn" onclick="countryFormatter.removePartyRow(this)">
+                    Remove
+                </button>
+            </td>
+        `;
+
+        this.popularityTableBody.appendChild(row);
+
+        // Add event listeners for real-time updates
+        const partyInput = row.querySelector('.party-input');
+        const popularityInput = row.querySelector('.popularity-input');
+        
+        partyInput.addEventListener('input', () => this.updatePopularityDisplay());
+        popularityInput.addEventListener('input', () => this.updatePopularityDisplay());
+
+        this.updatePopularityDisplay();
+    }
+
+    removePartyRow(button) {
+        const row = button.closest('tr');
+        row.remove();
+        this.updatePopularityDisplay();
+    }
+
+    updatePopularityDisplay() {
+        const parties = this.getPopularityData();
+        const total = parties.reduce((sum, party) => sum + party.popularity, 0);
+        
+        // Update total display
+        this.totalPopularitySpan.textContent = `Total: ${total.toFixed(1)}%`;
+        
+        // Update validation message
+        const validationMessage = this.validationMessageSpan;
+        if (Math.abs(total - 100) < 0.1) {
+            validationMessage.textContent = '✓ Valid';
+            validationMessage.className = 'validation-message valid';
+        } else {
+            validationMessage.textContent = `Must equal 100% (currently ${total.toFixed(1)}%)`;
+            validationMessage.className = 'validation-message invalid';
+        }
+
+        // Update pie chart
+        this.updatePieChart(parties);
+    }
+
+    getPopularityData() {
+        const rows = this.popularityTableBody.querySelectorAll('tr');
+        const parties = [];
+        
+        rows.forEach(row => {
+            const partyInput = row.querySelector('.party-input');
+            const popularityInput = row.querySelector('.popularity-input');
+            
+            const partyName = partyInput.value.trim();
+            const popularity = parseFloat(popularityInput.value) || 0;
+            
+            if (partyName) {
+                parties.push({
+                    name: partyName,
+                    popularity: popularity
+                });
+            }
+        });
+        
+        return parties;
+    }
+
+    initializePieChart() {
+        const ctx = document.getElementById('popularityChart').getContext('2d');
+        
+        this.popularityChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                        '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF',
+                        '#4BC0C0', '#FF6384', '#36A2EB', '#FFCE56'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 8,
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed.toFixed(1) + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    updatePieChart(parties) {
+        if (!this.popularityChart) return;
+        
+        const validParties = parties.filter(party => party.popularity > 0);
+        
+        this.popularityChart.data.labels = validParties.map(party => party.name);
+        this.popularityChart.data.datasets[0].data = validParties.map(party => party.popularity);
+        this.popularityChart.update();
+    }
+
+    generatePopularitiesBlock() {
+        const parties = this.getPopularityData();
+        return parties.map(party => 
+            `\t\t\t\t${party.name} = ${party.popularity.toFixed(1)}`
+        ).join('\n');
     }
 
     addCountry() {
@@ -69,6 +253,10 @@ class CountryFormatter {
                 <div class="form-group">
                     <label for="leaderPortrait_${countryId}">Leader Portrait Path:</label>
                     <input type="text" id="leaderPortrait_${countryId}" name="leaderPortrait_${countryId}" placeholder="gfx/leaders/TAG/Portrait_Name.png">
+                </div>
+                <div class="form-group">
+                    <label for="leaderIdeology_${countryId}">Leader Ideology:</label>
+                    <input type="text" id="leaderIdeology_${countryId}" name="leaderIdeology_${countryId}" placeholder="absolute_monarchy_subtype">
                 </div>
             </div>
         `;
@@ -114,6 +302,95 @@ class CountryFormatter {
         });
     }
 
+    toggleFullCodeGeneration() {
+        const isEnabled = this.generateFullCodeCheckbox && this.generateFullCodeCheckbox.checked;
+        
+        if (isEnabled) {
+            this.fullCodeSettings.classList.add('enabled');
+            this.categoryOutputSection.style.display = 'block';
+            // Initialize with some default focus IDs if empty
+            if (this.focusIdsTableBody.children.length === 0) {
+                this.addFocusRow('OTT_United_Once_More');
+                this.addFocusRow('OTT_Egypt_Khedivate');
+            }
+        } else {
+            this.fullCodeSettings.classList.remove('enabled');
+            this.categoryOutputSection.style.display = 'none';
+        }
+    }
+
+    addFocusRow(focusId = '') {
+        const row = document.createElement('tr');
+        const focusRowId = Date.now() + Math.random(); // Unique ID for each row
+        
+        row.innerHTML = `
+            <td>
+                <input type="text" class="focus-input" value="${focusId}" 
+                       placeholder="Focus ID (e.g., OTT_United_Once_More)" data-focus-id="${focusRowId}">
+            </td>
+            <td>
+                <button type="button" class="remove-focus-btn" onclick="countryFormatter.removeFocusRow(this)">
+                    Remove
+                </button>
+            </td>
+        `;
+
+        this.focusIdsTableBody.appendChild(row);
+    }
+
+    removeFocusRow(button) {
+        const row = button.closest('tr');
+        row.remove();
+    }
+
+    getFocusIds() {
+        const rows = this.focusIdsTableBody.querySelectorAll('tr');
+        const focusIds = [];
+        
+        rows.forEach(row => {
+            const focusInput = row.querySelector('.focus-input');
+            const focusId = focusInput.value.trim();
+            
+            if (focusId) {
+                focusIds.push(focusId);
+            }
+        });
+        
+        return focusIds;
+    }
+
+    generateDecisionCategoryBlock(masterTag) {
+        const focusIds = this.getFocusIds();
+        
+        // Generate the focus conditions
+        let focusConditions = '';
+        if (focusIds.length > 0) {
+            if (focusIds.length === 1) {
+                focusConditions = `\t\thas_completed_focus = ${focusIds[0]}`;
+            } else {
+                focusConditions = `\t\tOR = {\n`;
+                focusIds.forEach(focusId => {
+                    focusConditions += `\t\t\thas_completed_focus = ${focusId}\n`;
+                });
+                focusConditions += `\t\t}`;
+            }
+        }
+
+        const decisionCategoryBlock = `${masterTag}_great_game = {
+\ticon = GFX_decision_category_foreign_policy
+
+\tallowed = {
+\t\toriginal_tag = ${masterTag}
+\t}
+
+\tvisible = { 
+${focusConditions}
+\t}
+}`;
+
+        return decisionCategoryBlock;
+    }
+
     async generateOutput() {
         try {
             const masterTag = this.masterTagInput.value.trim();
@@ -125,6 +402,14 @@ class CountryFormatter {
             const puppetIdeology = this.puppetIdeologyInput.value.trim();
             if (!puppetIdeology) {
                 alert('Please enter a puppet ideology');
+                return;
+            }
+
+            // Validate popularity settings
+            const parties = this.getPopularityData();
+            const total = parties.reduce((sum, party) => sum + party.popularity, 0);
+            if (Math.abs(total - 100) >= 0.1) {
+                alert(`Popularity settings must total 100% (currently ${total.toFixed(1)}%)`);
                 return;
             }
 
@@ -151,6 +436,14 @@ class CountryFormatter {
             const { eventCode, localization } = this.formatOutput(masterTag, puppetIdeology, countries);
             this.eventOutputTextarea.value = eventCode;
             this.localizationOutputTextarea.value = localization;
+            
+            // Generate category code if Generate Full Code is enabled
+            if (this.generateFullCodeCheckbox && this.generateFullCodeCheckbox.checked) {
+                const categoryCode = this.generateDecisionCategoryBlock(masterTag);
+                this.categoryOutputTextarea.value = categoryCode;
+            } else {
+                this.categoryOutputTextarea.value = '';
+            }
             
         } catch (error) {
             console.error('Error generating output:', error);
@@ -189,8 +482,10 @@ class CountryFormatter {
         if (this.enableLeaderFieldsCheckbox && this.enableLeaderFieldsCheckbox.checked) {
             const leaderName = document.getElementById(`leaderName_${countryId}`).value.trim();
             const leaderPortrait = document.getElementById(`leaderPortrait_${countryId}`).value.trim();
+            const leaderIdeology = document.getElementById(`leaderIdeology_${countryId}`).value.trim();
             result.leaderName = leaderName || null;
             result.leaderPortrait = leaderPortrait || null;
+            result.leaderIdeology = leaderIdeology || null;
         }
 
         return result;
@@ -210,14 +505,14 @@ class CountryFormatter {
         
         // If leader fields are enabled, validate them too
         if (this.enableLeaderFieldsCheckbox && this.enableLeaderFieldsCheckbox.checked) {
-            valid = valid && country.leaderName && country.leaderPortrait;
+            valid = valid && country.leaderName && country.leaderPortrait && country.leaderIdeology;
         }
         
         return valid;
     }
 
     formatOutput(masterTag, puppetIdeology, countries) {
-        const generateTexasReleaseCode = (masterTag, targetTag, stateIds, governmentName, nationFullName, leaderName, leaderPortrait) => {
+        const generateTexasReleaseCode = (masterTag, targetTag, stateIds, governmentName, nationFullName, leaderName, leaderPortrait, leaderIdeology) => {
             // Generate the state list for `available`
             const stateListAvailable = stateIds.map(stateId => 
                 `\t\t${stateId} = { owner = { OR = { original_tag = ${masterTag} is_subject_of = ${masterTag} } } }`
@@ -277,25 +572,18 @@ ${stateListCore}
 \t\t${targetTag} = { 
 \t\t\tset_cosmetic_tag = OTT_${targetTag}_OCC
 \t\t\tload_focus_tree = generic_focus            
-${leaderName && leaderPortrait ? `
+${leaderName && leaderPortrait && leaderIdeology ? `
 \t\t\tcreate_country_leader = {
 \t\t\t\tname = "${leaderName}"
 \t\t\t\tpicture = "${leaderPortrait}"
 \t\t\t\texpire = "1.1.1"
-\t\t\t\tideology = absolute_monarchy_subtype
+\t\t\t\tideology = ${leaderIdeology}
 \t\t\t\ttraits = {
 \t\t\t\t}
 \t\t\t}` : ''}
 
 \t\t\tset_popularities = {
-\t\t\t\tsyndicalist = 5
-\t\t\t\tsocial_democrat = 5
-\t\t\t\tsocial_liberal = 0
-\t\t\t\tmarket_liberal = 0
-\t\t\t\tsocial_conservative = 20
-\t\t\t\tauthoritarian_democrat = 50
-\t\t\t\tpaternal_autocrat = 10
-\t\t\t\tnational_populist = 10
+${this.generatePopularitiesBlock()}
 \t\t\t}
 \t\t\tset_party_name = {
 \t\t\t\tideology = paternal_autocrat
@@ -324,7 +612,7 @@ ${leaderName && leaderPortrait ? `
 }`;
 
             // Localization template
-            const localization = `OTT_${targetTag}_OCC:0 "${nationFullName}"\n${masterTag}_establish_rk_${targetTag}:0 "Establish ${nationFullName}"`;
+            const localization = `${masterTag}_${targetTag}_OCC:0 "${nationFullName}"\n${masterTag}_establish_rk_${targetTag}:0 "Establish ${nationFullName}"`;
 
             return { eventCode, localization };
         };
@@ -344,7 +632,8 @@ ${leaderName && leaderPortrait ? `
                  governmentName, 
                  country.nationFullName,
                  country.leaderName,
-                 country.leaderPortrait
+                 country.leaderPortrait,
+                 country.leaderIdeology
              );
              allEventCodes.push(eventCode);
              allLocalizations.push(localization);
@@ -362,18 +651,39 @@ ${leaderName && leaderPortrait ? `
             this.puppetIdeologyInput.value = '';
             this.enableGovernmentNameCheckbox.checked = false;
             this.enableLeaderFieldsCheckbox.checked = false;
+            this.generateFullCodeCheckbox.checked = false;
             this.countriesContainer.innerHTML = '';
             this.eventOutputTextarea.value = '';
             this.localizationOutputTextarea.value = '';
+            this.categoryOutputTextarea.value = '';
             this.countryCounter = 0;
+            
+            // Reset popularity settings
+            this.popularityTableBody.innerHTML = '';
+            this.initializePopularitySettings();
+            
+            // Reset focus IDs
+            this.focusIdsTableBody.innerHTML = '';
+            this.toggleFullCodeGeneration();
+            
             this.addCountry();
         }
     }
 
     async copyToClipboard(type) {
         try {
-            const textToCopy = type === 'event' ? this.eventOutputTextarea.value : this.localizationOutputTextarea.value;
-            const buttonElement = type === 'event' ? this.copyEventBtn : this.copyLocalizationBtn;
+            let textToCopy, buttonElement;
+            
+            if (type === 'event') {
+                textToCopy = this.eventOutputTextarea.value;
+                buttonElement = this.copyEventBtn;
+            } else if (type === 'category') {
+                textToCopy = this.categoryOutputTextarea.value;
+                buttonElement = this.copyCategoryBtn;
+            } else {
+                textToCopy = this.localizationOutputTextarea.value;
+                buttonElement = this.copyLocalizationBtn;
+            }
             
             await navigator.clipboard.writeText(textToCopy);
             
@@ -389,10 +699,22 @@ ${leaderName && leaderPortrait ? `
             
         } catch (err) {
             // Fallback for older browsers
-            const textareaToCopy = type === 'event' ? this.eventOutputTextarea : this.localizationOutputTextarea;
+            let textareaToCopy, alertMessage;
+            
+            if (type === 'event') {
+                textareaToCopy = this.eventOutputTextarea;
+                alertMessage = 'Event code copied to clipboard!';
+            } else if (type === 'category') {
+                textareaToCopy = this.categoryOutputTextarea;
+                alertMessage = 'Category code copied to clipboard!';
+            } else {
+                textareaToCopy = this.localizationOutputTextarea;
+                alertMessage = 'Localization copied to clipboard!';
+            }
+            
             textareaToCopy.select();
             document.execCommand('copy');
-            alert(`${type === 'event' ? 'Event code' : 'Localization'} copied to clipboard!`);
+            alert(alertMessage);
         }
     }
 }

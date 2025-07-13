@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State Grabber Generator - World Domination Puppets Maker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .country-tags-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #dee2e6;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section-header h3 {
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .country-tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            min-height: 40px;
+        }
+
+        .country-tag {
+            background: #007bff;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .country-tag .remove-btn {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: background 0.3s ease;
+        }
+
+        .country-tag .remove-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .add-country-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-country-form input {
+            flex: 1;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+            font-size: 16px;
+            padding: 12px 24px;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+            transform: translateY(-2px);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .output-section {
+            margin-top: 30px;
+        }
+
+        .output-section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            background-color: #f8f9fa;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .add-country-form {
+                flex-direction: column;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Back to Home</a>
+        
+        <h1>State Grabber Generator</h1>
+        <p class="subtitle">Generate code to log all owned states for specified countries</p>
+        
+        <form id="stateGrabberForm">
+            <div class="form-group">
+                <label for="decisionName">Decision Name:</label>
+                <input type="text" id="decisionName" name="decisionName" placeholder="e.g., MING_great_game_testing" required>
+            </div>
+            
+            <div class="country-tags-section">
+                <div class="section-header">
+                    <h3>Country Tags</h3>
+                    <span id="countryCount">0 countries</span>
+                </div>
+                
+                <div class="country-tags-list" id="countryTagsList">
+                    <!-- Country tags will be added here dynamically -->
+                </div>
+                
+                <div class="add-country-form">
+                    <input type="text" id="countryTagInput" placeholder="Enter country tag (e.g., CEN, CAN, BOL)" maxlength="3">
+                    <button type="button" id="addCountryBtn" class="btn btn-primary">Add Country</button>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" id="generateBtn" class="btn btn-success">Generate State Grabber Code</button>
+                <button type="button" id="clearBtn" class="btn btn-secondary">Clear All</button>
+            </div>
+        </form>
+        
+        <div class="output-section">
+            <h2>Generated Code</h2>
+            <textarea id="codeOutput" readonly placeholder="Generated state grabber code will appear here..."></textarea>
+            <div style="margin-top: 10px; text-align: center;">
+                <button type="button" id="copyBtn" class="btn btn-primary">Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class StateGrabberGenerator {
+            constructor() {
+                this.countryTags = [];
+                this.init();
+            }
+
+            init() {
+                // Get DOM elements
+                this.decisionNameInput = document.getElementById('decisionName');
+                this.countryTagInput = document.getElementById('countryTagInput');
+                this.addCountryBtn = document.getElementById('addCountryBtn');
+                this.countryTagsList = document.getElementById('countryTagsList');
+                this.countryCount = document.getElementById('countryCount');
+                this.generateBtn = document.getElementById('generateBtn');
+                this.clearBtn = document.getElementById('clearBtn');
+                this.codeOutput = document.getElementById('codeOutput');
+                this.copyBtn = document.getElementById('copyBtn');
+
+                // Add event listeners
+                this.addCountryBtn.addEventListener('click', () => this.addCountryTag());
+                this.countryTagInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.addCountryTag();
+                    }
+                });
+                this.generateBtn.addEventListener('click', () => this.generateCode());
+                this.clearBtn.addEventListener('click', () => this.clearAll());
+                this.copyBtn.addEventListener('click', () => this.copyToClipboard());
+
+                // Initialize with example data
+                this.decisionNameInput.value = 'MING_great_game_testing';
+                this.addCountryTag('CEN');
+                this.addCountryTag('CAN');
+                this.addCountryTag('BOL');
+            }
+
+            addCountryTag(tag = null) {
+                const inputTag = tag || this.countryTagInput.value.trim().toUpperCase();
+                
+                if (!inputTag) {
+                    alert('Please enter a country tag');
+                    return;
+                }
+
+                if (inputTag.length > 3) {
+                    alert('Country tags should be 3 characters or less');
+                    return;
+                }
+
+                if (this.countryTags.includes(inputTag)) {
+                    alert('Country tag already added');
+                    return;
+                }
+
+                this.countryTags.push(inputTag);
+                this.updateCountryTagsList();
+                this.countryTagInput.value = '';
+                this.countryTagInput.focus();
+            }
+
+            removeCountryTag(tag) {
+                const index = this.countryTags.indexOf(tag);
+                if (index > -1) {
+                    this.countryTags.splice(index, 1);
+                    this.updateCountryTagsList();
+                }
+            }
+
+            updateCountryTagsList() {
+                this.countryTagsList.innerHTML = '';
+                
+                this.countryTags.forEach(tag => {
+                    const tagElement = document.createElement('div');
+                    tagElement.className = 'country-tag';
+                    tagElement.innerHTML = `
+                        <span>${tag}</span>
+                        <button class="remove-btn" onclick="stateGrabber.removeCountryTag('${tag}')">&times;</button>
+                    `;
+                    this.countryTagsList.appendChild(tagElement);
+                });
+
+                this.countryCount.textContent = `${this.countryTags.length} countries`;
+            }
+
+            generateCode() {
+                const decisionName = this.decisionNameInput.value.trim();
+                
+                if (!decisionName) {
+                    alert('Please enter a decision name');
+                    return;
+                }
+
+                if (this.countryTags.length === 0) {
+                    alert('Please add at least one country tag');
+                    return;
+                }
+
+                const code = this.formatCode(decisionName, this.countryTags);
+                this.codeOutput.value = code;
+            }
+
+            formatCode(decisionName, countries) {
+                let completeEffect = '';
+                
+                countries.forEach(country => {
+                    completeEffect += `\t\t\tlog = "${country}"\n`;
+                    completeEffect += `\t\t\t${country} = {\n`;
+                    completeEffect += `\t\t\t\tevery_owned_state = {\n`;
+                    completeEffect += `\t\t\t\t\tlog = "[state.GetID]"\n`;
+                    completeEffect += `\t\t\t\t}\n`;
+                    completeEffect += `\t\t\t}\n\n`;
+                });
+
+                // Remove the last extra newline
+                completeEffect = completeEffect.trim();
+
+                const code = `${decisionName} = {
+\t\ticon = generic_prepare_civil_war
+\t\tcomplete_effect = {
+\t\t\t
+\t\t\t${completeEffect}
+\t\t}
+\t\tdays_remove = 0
+\t}`;
+
+                return code;
+            }
+
+            clearAll() {
+                if (confirm('Are you sure you want to clear all data?')) {
+                    this.decisionNameInput.value = '';
+                    this.countryTags = [];
+                    this.updateCountryTagsList();
+                    this.codeOutput.value = '';
+                }
+            }
+
+            async copyToClipboard() {
+                try {
+                    await navigator.clipboard.writeText(this.codeOutput.value);
+                    
+                    // Show feedback
+                    const originalText = this.copyBtn.textContent;
+                    this.copyBtn.textContent = 'Copied!';
+                    this.copyBtn.style.background = '#28a745';
+                    
+                    setTimeout(() => {
+                        this.copyBtn.textContent = originalText;
+                        this.copyBtn.style.background = '';
+                    }, 2000);
+                    
+                } catch (err) {
+                    // Fallback for older browsers
+                    this.codeOutput.select();
+                    document.execCommand('copy');
+                    alert('Code copied to clipboard!');
+                }
+            }
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.stateGrabber = new StateGrabberGenerator();
+        });
+    </script>
+</body>
+</html> 

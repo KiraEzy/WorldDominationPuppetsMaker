@@ -3,66 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOI4 Texas Release Code Generator</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>World Domination Puppets Maker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+            font-weight: 300;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .tool-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .tool-card:hover::before {
+            left: 100%;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-color: #007bff;
+        }
+
+        .tool-card.release-generator {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: white;
+        }
+
+        .tool-card.state-grabber {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #2c3e50;
+        }
+
+        .tool-card.image-converter {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #2c3e50;
+        }
+
+        .tool-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .tool-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .tool-description {
+            font-size: 0.9em;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>HOI4 Texas Release Code Generator</h1>
+        <h1>World Domination Puppets Maker</h1>
+        <p class="subtitle">Your ultimate toolkit for Hearts of Iron IV modding</p>
         
-        <form id="countryForm">
-            <div class="form-group">
-                <label for="masterTag">Master Country Tag:</label>
-                <input type="text" id="masterTag" name="masterTag" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="puppetIdeology">Puppet Ideology:</label>
-                <input type="text" id="puppetIdeology" name="puppetIdeology" required>
-            </div>
-            
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" id="enableGovernmentName" name="enableGovernmentName">
-                    Enable Custom Government Names
-                </label>
-            </div>
-            
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" id="enableLeaderFields" name="enableLeaderFields">
-                    Enable Leader Fields
-                </label>
-            </div>
-            
-            <div class="countries-section">
-                <h2>Countries</h2>
-                <div id="countriesContainer">
-                    <!-- Countries will be added dynamically -->
+        <div class="tools-grid">
+            <a href="release_generator.html" class="tool-card release-generator">
+                <div class="tool-icon">🎭</div>
+                <div class="tool-title">Release Generator</div>
+                <div class="tool-description">
+                    Generate puppet state release events with custom leaders, governments, and popularity settings
                 </div>
-                
-                <button type="button" id="addCountryBtn" class="btn-secondary">Add Country</button>
-            </div>
+            </a>
             
-            <div class="form-actions">
-                <button type="button" id="generateBtn" class="btn-primary">Generate Output</button>
-                <button type="button" id="clearBtn" class="btn-secondary">Clear All</button>
-            </div>
-        </form>
-        
-        <div class="output-section">
-            <h2>Generated Event Code</h2>
-            <textarea id="eventOutput" readonly placeholder="Generated event code will appear here..."></textarea>
-            <button type="button" id="copyEventBtn" class="btn-secondary">Copy Event Code</button>
+            <a href="state_grabber.html" class="tool-card state-grabber">
+                <div class="tool-icon">🗺️</div>
+                <div class="tool-title">State Grabber Generator</div>
+                <div class="tool-description">
+                    Create state transfer and territorial management events for your campaigns
+                </div>
+            </a>
+            
+            <a href="image_converter.html" class="tool-card image-converter">
+                <div class="tool-icon">🖼️</div>
+                <div class="tool-title">Image Converter</div>
+                <div class="tool-description">
+                    Convert and optimize images for Hearts of Iron IV portraits and graphics
+                </div>
+            </a>
         </div>
         
-        <div class="output-section">
-            <h2>Generated Localization</h2>
-            <textarea id="localizationOutput" readonly placeholder="Generated localization will appear here..."></textarea>
-            <button type="button" id="copyLocalizationBtn" class="btn-secondary">Copy Localization</button>
+        <div class="footer">
+            <p>Build powerful HOI4 mods with ease • Version 1.0</p>
         </div>
     </div>
-    
-    <script src="script.js"></script>
 </body>
 </html>

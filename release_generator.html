@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOI4 Texas Release Code Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>HOI4 Texas Release Code Generator</h1>
+        
+        <form id="countryForm">
+            <div class="form-group">
+                <label for="masterTag">Master Country Tag:</label>
+                <input type="text" id="masterTag" name="masterTag" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="puppetIdeology">Puppet Ideology:</label>
+                <input type="text" id="puppetIdeology" name="puppetIdeology" required>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="enableGovernmentName" name="enableGovernmentName">
+                    Enable Custom Government Names
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="enableLeaderFields" name="enableLeaderFields">
+                    Enable Leader Fields
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="generateFullCode" name="generateFullCode">
+                    Generate Full Code
+                </label>
+            </div>
+            
+            <div class="full-code-settings" id="fullCodeSettings">
+                <h2>Decision Category Settings</h2>
+                <div class="focus-ids-section">
+                    <div class="table-header">
+                        <h3>Required Focus IDs</h3>
+                        <button type="button" id="addFocusBtn" class="btn-secondary">Add Focus ID</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="focusIdsTable">
+                            <thead>
+                                <tr>
+                                    <th>Focus ID</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="focusIdsTableBody">
+                                <!-- Rows will be added dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popularity-settings">
+                <h2>Popularity Settings</h2>
+                <div class="popularity-container">
+                    <div class="popularity-table-section">
+                        <div class="table-header">
+                            <h3>Political Parties</h3>
+                            <button type="button" id="addPartyBtn" class="btn-secondary">Add Party</button>
+                        </div>
+                        <div class="table-container">
+                            <table id="popularityTable">
+                                <thead>
+                                    <tr>
+                                        <th>Party</th>
+                                        <th>Popularity %</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="popularityTableBody">
+                                    <!-- Rows will be added dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="total-validation">
+                            <span id="totalPopularity">Total: 0%</span>
+                            <span id="validationMessage" class="validation-message"></span>
+                        </div>
+                    </div>
+                    <div class="pie-chart-section">
+                        <h3>Popularity Preview</h3>
+                        <canvas id="popularityChart" width="300" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="countries-section">
+                <h2>Countries</h2>
+                <div id="countriesContainer">
+                    <!-- Countries will be added dynamically -->
+                </div>
+                
+                <button type="button" id="addCountryBtn" class="btn-secondary">Add Country</button>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" id="generateBtn" class="btn-primary">Generate Output</button>
+                <button type="button" id="clearBtn" class="btn-secondary">Clear All</button>
+            </div>
+        </form>
+        
+        <div class="output-section" id="categoryOutputSection">
+            <h2>Generated Event Category Code</h2>
+            <textarea id="categoryOutput" readonly placeholder="Generated event category code will appear here..."></textarea>
+            <button type="button" id="copyCategoryBtn" class="btn-secondary">Copy Category Code</button>
+        </div>
+
+        <div class="output-section">
+            <h2>Generated Event Code</h2>
+            <textarea id="eventOutput" readonly placeholder="Generated event code will appear here..."></textarea>
+            <button type="button" id="copyEventBtn" class="btn-secondary">Copy Event Code</button>
+        </div>
+        
+        <div class="output-section">
+            <h2>Generated Localization</h2>
+            <textarea id="localizationOutput" readonly placeholder="Generated localization will appear here..."></textarea>
+            <button type="button" id="copyLocalizationBtn" class="btn-secondary">Copy Localization</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

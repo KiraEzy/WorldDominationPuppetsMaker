@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Converter - World Domination Puppets Maker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section.drag-over {
+            border-color: #007bff;
+            background: #e7f3ff;
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            font-size: 1.2em;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-input-button {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .selected-files {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e8f5e8;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .selected-files.show {
+            display: block;
+        }
+
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .file-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .file-item img {
+            max-width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+
+        .file-name {
+            font-size: 12px;
+            color: #555;
+            word-break: break-word;
+        }
+
+        .remove-file {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+
+
+        .size-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .size-info h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .size-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .size-item {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #bbdefb;
+        }
+
+        .size-item strong {
+            color: #1976d2;
+        }
+
+        .convert-button {
+            background: #28a745;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .convert-button:hover {
+            background: #1e7e34;
+            transform: translateY(-2px);
+        }
+
+        .convert-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-section {
+            display: none;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .progress-section.show {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #007bff;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .upload-section {
+                padding: 20px;
+            }
+            
+            .file-list {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Back to Home</a>
+        
+        <h1>Image Converter</h1>
+        <p class="subtitle">Convert images to TGA format for Hearts of Iron IV flags</p>
+        
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-icon">🖼️</div>
+            <div class="upload-text">
+                Drag and drop images here or click to select files
+            </div>
+            <div class="file-input-wrapper">
+                <input type="file" id="fileInput" class="file-input" multiple accept="image/*">
+                <button class="file-input-button" onclick="document.getElementById('fileInput').click()">
+                    Select Images
+                </button>
+            </div>
+        </div>
+
+        <div class="selected-files" id="selectedFiles">
+            <h3>Selected Files</h3>
+            <div class="file-list" id="fileList"></div>
+        </div>
+
+
+
+        <div class="size-info">
+            <h4>Output Sizes</h4>
+            <div class="size-grid">
+                <div class="size-item">
+                    <strong>Large</strong><br>82 × 52 pixels
+                </div>
+                <div class="size-item">
+                    <strong>Medium</strong><br>41 × 26 pixels
+                </div>
+                <div class="size-item">
+                    <strong>Small</strong><br>11 × 7 pixels
+                </div>
+            </div>
+        </div>
+
+        <button class="convert-button" id="convertButton" disabled>
+            Convert Images to TGA
+        </button>
+
+        <div class="progress-section" id="progressSection">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Processing...</div>
+        </div>
+    </div>
+
+    <script>
+        class ImageConverter {
+            constructor() {
+                this.selectedFiles = [];
+                this.init();
+            }
+
+            init() {
+                this.fileInput = document.getElementById('fileInput');
+                this.uploadSection = document.getElementById('uploadSection');
+                this.selectedFilesDiv = document.getElementById('selectedFiles');
+                this.fileList = document.getElementById('fileList');
+                this.convertButton = document.getElementById('convertButton');
+                this.progressSection = document.getElementById('progressSection');
+                this.progressFill = document.getElementById('progressFill');
+                this.progressText = document.getElementById('progressText');
+
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+                this.convertButton.addEventListener('click', () => this.convertImages());
+
+                // Drag and drop
+                this.uploadSection.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    this.uploadSection.classList.add('drag-over');
+                });
+
+                this.uploadSection.addEventListener('dragleave', () => {
+                    this.uploadSection.classList.remove('drag-over');
+                });
+
+                this.uploadSection.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    this.uploadSection.classList.remove('drag-over');
+                    this.handleFileSelect({ target: { files: e.dataTransfer.files } });
+                });
+            }
+
+            handleFileSelect(e) {
+                const files = Array.from(e.target.files);
+                const imageFiles = files.filter(file => file.type.startsWith('image/'));
+                
+                this.selectedFiles = [...this.selectedFiles, ...imageFiles];
+                this.updateFileList();
+                this.updateConvertButton();
+            }
+
+            updateFileList() {
+                if (this.selectedFiles.length === 0) {
+                    this.selectedFilesDiv.classList.remove('show');
+                    return;
+                }
+
+                this.selectedFilesDiv.classList.add('show');
+                this.fileList.innerHTML = '';
+
+                this.selectedFiles.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.onload = () => URL.revokeObjectURL(img.src);
+
+                    const fileName = document.createElement('div');
+                    fileName.className = 'file-name';
+                    fileName.textContent = file.name;
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-file';
+                    removeBtn.innerHTML = '×';
+                    removeBtn.onclick = () => this.removeFile(index);
+
+                    fileItem.appendChild(img);
+                    fileItem.appendChild(fileName);
+                    fileItem.appendChild(removeBtn);
+                    this.fileList.appendChild(fileItem);
+                });
+            }
+
+            removeFile(index) {
+                this.selectedFiles.splice(index, 1);
+                this.updateFileList();
+                this.updateConvertButton();
+            }
+
+            updateConvertButton() {
+                this.convertButton.disabled = this.selectedFiles.length === 0;
+            }
+
+            cleanFileName(name) {
+                // Remove file extension
+                const baseName = name.replace(/\.[^/.]+$/, '');
+                
+                // Remove "_0000_" style prefix if present
+                const match = baseName.match(/^_\d{4}_(.+)$/);
+                if (match) {
+                    return match[1];
+                }
+                
+                return baseName;
+            }
+
+            async convertImages() {
+                if (this.selectedFiles.length === 0) return;
+
+                this.convertButton.disabled = true;
+                this.progressSection.classList.add('show');
+                
+                const zip = new JSZip();
+                
+                for (let i = 0; i < this.selectedFiles.length; i++) {
+                    const file = this.selectedFiles[i];
+                    const progress = ((i + 1) / this.selectedFiles.length) * 100;
+                    
+                    this.updateProgress(progress, `Processing ${file.name}...`);
+                    
+                    try {
+                        const cleanName = this.cleanFileName(file.name);
+                        
+                        // Convert to different sizes
+                        const sizes = {
+                            large: { width: 82, height: 52, path: `${cleanName}.tga` },
+                            medium: { width: 41, height: 26, path: `medium/${cleanName}.tga` },
+                            small: { width: 11, height: 7, path: `small/${cleanName}.tga` }
+                        };
+
+                        for (const [sizeName, config] of Object.entries(sizes)) {
+                            const tgaData = await this.convertToTGA(file, config.width, config.height);
+                            zip.file(config.path, tgaData);
+                        }
+                        
+                    } catch (error) {
+                        console.error(`Error processing ${file.name}:`, error);
+                    }
+                }
+
+                this.updateProgress(100, 'Creating ZIP file...');
+                
+                try {
+                    const zipBlob = await zip.generateAsync({ type: 'blob' });
+                    this.downloadZip(zipBlob);
+                    this.updateProgress(100, 'Complete!');
+                    
+                    setTimeout(() => {
+                        this.progressSection.classList.remove('show');
+                        this.convertButton.disabled = false;
+                    }, 2000);
+                    
+                } catch (error) {
+                    console.error('Error creating ZIP:', error);
+                    alert('Error creating ZIP file');
+                    this.convertButton.disabled = false;
+                    this.progressSection.classList.remove('show');
+                }
+            }
+
+            async convertToTGA(file, width, height) {
+                return new Promise((resolve, reject) => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const img = new Image();
+                    
+                    img.onload = () => {
+                        canvas.width = width;
+                        canvas.height = height;
+                        
+                        // Draw and resize image
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Get image data
+                        const imageData = ctx.getImageData(0, 0, width, height);
+                        const pixels = imageData.data;
+                        
+                        // Create TGA header (18 bytes)
+                        const header = new Uint8Array(18);
+                        header[2] = 2; // Image type: uncompressed RGB
+                        header[12] = width & 0xFF;
+                        header[13] = (width >> 8) & 0xFF;
+                        header[14] = height & 0xFF;
+                        header[15] = (height >> 8) & 0xFF;
+                        header[16] = 24; // Bits per pixel
+                        header[17] = 0x20; // Image descriptor
+                        
+                        // Create pixel data (BGR format for TGA)
+                        const pixelData = new Uint8Array(width * height * 3);
+                        for (let i = 0; i < pixels.length; i += 4) {
+                            const pixelIndex = (i / 4) * 3;
+                            pixelData[pixelIndex] = pixels[i + 2];     // B
+                            pixelData[pixelIndex + 1] = pixels[i + 1]; // G
+                            pixelData[pixelIndex + 2] = pixels[i];     // R
+                        }
+                        
+                        // Combine header and pixel data
+                        const tgaData = new Uint8Array(header.length + pixelData.length);
+                        tgaData.set(header);
+                        tgaData.set(pixelData, header.length);
+                        
+                        resolve(tgaData);
+                    };
+                    
+                    img.onerror = reject;
+                    img.src = URL.createObjectURL(file);
+                });
+            }
+
+            updateProgress(percent, text) {
+                this.progressFill.style.width = `${percent}%`;
+                this.progressText.textContent = text;
+            }
+
+            downloadZip(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'converted_images.zip';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            new ImageConverter();
+        });
+    </script>
+</body>
+</html> 
