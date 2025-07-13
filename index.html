@@ -118,6 +118,57 @@
             line-height: 1.4;
         }
 
+        .how-to-use {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .how-to-use h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .how-to-use-content {
+            color: #555;
+            font-size: 1.05em;
+            line-height: 2.2;
+            text-align: left;
+            max-width: none;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            white-space: pre-line;
+        }
+
+        .how-to-use-content a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+            background: #e7f3ff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin: 2px 0;
+        }
+
+        .how-to-use-content a:hover {
+            background: #007bff;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+        }
+
         .footer {
             margin-top: 40px;
             padding-top: 20px;
@@ -144,7 +195,6 @@
 <body>
     <div class="container">
         <h1>World Domination Puppets Maker</h1>
-        <p class="subtitle">Your ultimate toolkit for Hearts of Iron IV modding</p>
         
         <div class="tools-grid">
             <a href="release_generator.html" class="tool-card release-generator">
@@ -170,6 +220,34 @@
                     Convert and optimize images for Hearts of Iron IV portraits and graphics
                 </div>
             </a>
+        </div>
+        
+        <div class="how-to-use">
+            <h2>📚 How to Use the Tools</h2>
+            <div class="how-to-use-content">
+                1. Make Flags that are in the resolution of 820 x 520
+                <br>
+                <a href="https://youtu.be/nVehWZMFS24?t=690">Decision Category tutorial</a>
+                <br>
+                2. Make a event category in /common/decisions/categories/kxwd_xxxxxx_decision_category.txt
+                <br>
+                3. Make a event in /common/decisions/kxwd_xxxxxx_decisions.txt
+                <br>
+                4. Make a localization file in /common/localisation\DOM_xxxxxx_l_english.yml
+                <br>
+                5. Use the KX built in debug tool to draw the countries lands, make sure all the countries have the cores on their lands and dont have cores on other countries lands
+                <br>
+                6. Use the State Grabber Generator to grab the states from the debug tool, just put the countries tag in the state grabber generator.
+                <br>
+                7. Use the Flag Converter to convert the flags to the correct format, 
+                the large flag would be placed in /gfx/flags/YOUR_NAME.tga
+                the medium flag would be placed in /gfx/flags/medium/YOUR_NAME.tga
+                the small flag would be placed in /gfx/flags/small/YOUR_NAME.tga
+                <br>
+                8. Use the Release Generator to generate the release events for the countries, just put the countries tag in the release generator.
+                If you are generating for the first time, make sure to check the "Generate Full Code" checkbox.
+                
+            </div>
         </div>
         
         <div class="footer">
