@@ -625,15 +625,25 @@
                         header[14] = height & 0xFF;
                         header[15] = (height >> 8) & 0xFF;
                         header[16] = 24; // Bits per pixel
-                        header[17] = 0x20; // Image descriptor
+                        header[17] = 0x00; // Image descriptor: bottom-to-top orientation (standard TGA)
                         
-                        // Create pixel data (BGR format for TGA)
+                        // Create pixel data (BGR format for TGA) with vertical flip
                         const pixelData = new Uint8Array(width * height * 3);
-                        for (let i = 0; i < pixels.length; i += 4) {
-                            const pixelIndex = (i / 4) * 3;
-                            pixelData[pixelIndex] = pixels[i + 2];     // B
-                            pixelData[pixelIndex + 1] = pixels[i + 1]; // G
-                            pixelData[pixelIndex + 2] = pixels[i];     // R
+                        for (let y = 0; y < height; y++) {
+                            for (let x = 0; x < width; x++) {
+                                // Source pixel (top-to-bottom)
+                                const srcY = y;
+                                const srcIndex = (srcY * width + x) * 4;
+                                
+                                // Destination pixel (bottom-to-top)
+                                const dstY = height - 1 - y;
+                                const dstIndex = (dstY * width + x) * 3;
+                                
+                                // Convert RGBA to BGR and flip vertically
+                                pixelData[dstIndex] = pixels[srcIndex + 2];     // B
+                                pixelData[dstIndex + 1] = pixels[srcIndex + 1]; // G
+                                pixelData[dstIndex + 2] = pixels[srcIndex];     // R
+                            }
                         }
                         
                         // Combine header and pixel data
