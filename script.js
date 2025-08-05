@@ -570,7 +570,7 @@ ${stateListCore}
 \t\t\t}
 \t\t}
 \t\t${targetTag} = { 
-\t\t\tset_cosmetic_tag = OTT_${targetTag}_OCC
+\t\t\tset_cosmetic_tag = ${masterTag}_${targetTag}_OCC
 \t\t\tload_focus_tree = generic_focus            
 ${leaderName && leaderPortrait && leaderIdeology ? `
 \t\t\tcreate_country_leader = {
