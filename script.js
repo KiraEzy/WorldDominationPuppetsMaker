@@ -545,14 +545,13 @@ ${stateListAvailable}
 \t\tfactor = 5
 \t}
 \tcomplete_effect = {
-\t\trelease = ${targetTag}
 \t\t${targetTag} = {
 \t\t\tevery_core_state = {
 \t\t\t\tremove_core_of = ${targetTag}
 \t\t\t}
 \t\t}
 ${stateListCore}
-
+\t\trelease = ${targetTag}
 \t\t${targetTag} = { 
 \t\t\tevery_core_state = {
 \t\t\t\tlimit = {
