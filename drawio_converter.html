@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draw.io to Mermaid Converter - World Domination Puppets Maker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section.drag-over {
+            border-color: #1976d2;
+            background: #e3f2fd;
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            font-size: 1.2em;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-input-button {
+            background: #1976d2;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-button:hover {
+            background: #1565c0;
+            transform: translateY(-2px);
+        }
+
+        .output-section {
+            margin-top: 30px;
+        }
+
+        .output-section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        #output {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            background-color: #f8f9fa;
+            white-space: pre-wrap;
+            overflow: auto;
+        }
+
+        .copy-button {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .copy-button:hover {
+            background: #1e7e34;
+            transform: translateY(-2px);
+        }
+
+        .info-section {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #1976d2;
+        }
+
+        .info-section h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .info-section p {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .upload-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Back to Home</a>
+        
+        <h1>Draw.io to Mermaid Converter</h1>
+        <p class="subtitle">Convert your draw.io diagrams to Mermaid flowchart syntax</p>
+        
+        <div class="info-section">
+            <h3>📋 How to Use</h3>
+            <p><strong>1.</strong> Export your draw.io diagram as XML format (File → Export as → XML)</p>
+            <p><strong>2.</strong> Upload the XML file using the button below</p>
+            <p><strong>3.</strong> Copy the generated Mermaid code and use it in your documentation</p>
+        </div>
+        
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-icon">📊</div>
+            <div class="upload-text">
+                Select your draw.io XML file to convert
+            </div>
+            <div class="file-input-wrapper">
+                <input type="file" id="fileInput" class="file-input" accept=".xml">
+                <button class="file-input-button" onclick="document.getElementById('fileInput').click()">
+                    Select XML File
+                </button>
+            </div>
+        </div>
+
+        <div class="output-section">
+            <h2>Generated Mermaid Code</h2>
+            <pre id="output"></pre>
+            <button class="copy-button" id="copyButton" onclick="copyToClipboard()" style="display: none;">
+                Copy to Clipboard
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(event.target.result, "text/xml");
+
+                const cells = Array.from(xml.getElementsByTagName("mxCell"));
+
+                const nodes = {};
+                const edges = [];
+
+                cells.forEach(cell => {
+                    const id = cell.getAttribute("id");
+                    const value = cell.getAttribute("value");
+                    const source = cell.getAttribute("source");
+                    const target = cell.getAttribute("target");
+
+                    if (value && !source && !target) {
+                        // node
+                        nodes[id] = (value || "").replace(/<[^>]+>/g, "").trim();
+                    } else if (source && target) {
+                        edges.push({ source, target });
+                    }
+                });
+
+                // Mermaid syntax generation
+                let mermaid = "flowchart TD\n";
+                for (const [id, label] of Object.entries(nodes)) {
+                    const safeLabel = label.replace(/\n/g, " ");
+                    mermaid += `  ${id}["${safeLabel}"]\n`;
+                }
+                for (const { source, target } of edges) {
+                    if (nodes[source] && nodes[target]) {
+                        mermaid += `  ${source} --> ${target}\n`;
+                    }
+                }
+
+                document.getElementById("output").textContent = mermaid;
+                document.getElementById("copyButton").style.display = "inline-block";
+            };
+            reader.readAsText(file);
+        });
+
+        function copyToClipboard() {
+            const output = document.getElementById("output");
+            const text = output.textContent;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const button = document.getElementById("copyButton");
+                    const originalText = button.textContent;
+                    button.textContent = "Copied!";
+                    button.style.background = "#28a745";
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.background = "";
+                    }, 2000);
+                });
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Mermaid code copied to clipboard!');
+            }
+        }
+    </script>
+</body>
+</html> 

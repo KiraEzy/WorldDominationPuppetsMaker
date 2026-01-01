@@ -20,6 +20,39 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
+    position: relative;
+}
+
+.header-actions {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+}
+
+.help-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.help-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+}
+
+.help-icon {
+    font-size: 16px;
 }
 
 h1 {
@@ -27,6 +60,7 @@ h1 {
     color: #2c3e50;
     margin-bottom: 20px;
     font-size: 2em;
+    position: relative;
 }
 
 h2 {
@@ -52,6 +86,7 @@ label {
 
 input[type="text"],
 input[type="file"],
+select,
 textarea {
     width: 100%;
     padding: 6px 8px;
@@ -68,6 +103,154 @@ input[type="checkbox"] {
 
 label:has(input[type="checkbox"]) {
     display: flex;
+}
+
+.checkbox-with-field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.checkbox-with-field label {
+    margin-bottom: 0;
+}
+
+.government-name-fill-field {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.government-name-fill-field input[type="text"] {
+    width: 140px;
+    flex-shrink: 0;
+}
+
+.government-name-fill-field input[type="text"]:first-child {
+    width: 130px; /* Government Name */
+}
+
+.government-name-fill-field input[type="text"]:nth-child(2),
+.government-name-fill-field select:nth-child(2) {
+    width: 120px; /* Government Ideology */
+}
+
+.leader-fields-fill-field {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.leader-fields-fill-field input[type="text"] {
+    width: 140px;
+    flex-shrink: 0;
+}
+
+.leader-fields-fill-field input[type="text"]:nth-child(1) { /* Leader Name */
+    width: 120px;
+}
+
+.leader-fields-fill-field input[type="text"]:nth-child(2) { /* Portrait Path */
+    width: 180px;
+}
+
+.leader-fields-fill-field input[type="text"]:nth-child(3),
+.leader-fields-fill-field select:nth-child(3) { /* Ideology */
+    width: 140px;
+}
+
+.required-states-container {
+    position: relative;
+}
+
+.state-ids-with-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.state-ids-with-checkbox label:first-child {
+    margin-bottom: 0;
+    min-width: 120px;
+}
+
+.state-ids-with-checkbox input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+    margin-right: 10px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 0;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin: 0;
+    transform: scale(0.8);
+}
+
+.info-section {
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #fafbfc;
+}
+
+.info-section h4 {
+    margin: 0 0 12px 0;
+    color: #2c3e50;
+    font-size: 1.1em;
+    font-weight: 600;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 6px;
+}
+
+.info-section:not(.enabled) {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.save-load-section {
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #fafbfc;
+}
+
+.save-load-section h2 {
+    margin: 0 0 12px 0;
+    color: #2c3e50;
+    font-size: 1.1em;
+    font-weight: 600;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 6px;
+}
+
+.section-description {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.save-load-section textarea {
+    resize: vertical;
+    min-height: 200px;
+}
+
+.country-item .country-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
     align-items: center;
     font-weight: 600;
     color: #2c3e50;
@@ -94,9 +277,29 @@ label:has(input[type="checkbox"]) {
 
 input[type="text"]:focus,
 input[type="file"]:focus,
+select:focus,
 textarea:focus {
     outline: none;
     border-color: #3498db;
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+/* Auto-resize textareas for event and localization output */
+#eventOutput,
+#localizationOutput {
+    field-sizing: content;
+    min-height: 200px;
+    max-height: 800px;
 }
 
 /* Country container styles */

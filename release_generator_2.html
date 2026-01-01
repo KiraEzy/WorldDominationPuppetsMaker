@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Release Generator 2.0</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header-actions">
+            <a href="how-to.html" target="_blank" class="help-button">
+                <span class="help-icon">📚</span>
+                How-To Guide
+            </a>
+        </div>
+        <h1>Release Generator 2.0</h1>
+
+        <form id="countryForm">
+            <div class="form-group">
+                <label for="masterTag">Master Country Tag:</label>
+                <input type="text" id="masterTag" name="masterTag" required>
+            </div>
+
+            <div class="form-group">
+                <label for="puppetIdeology">Puppet Ideology:</label>
+                <select id="puppetIdeology" name="puppetIdeology" required>
+                    <option value="">Select Ideology</option>
+                    <option value="totalist">Totalist</option>
+                    <option value="syndicalist">Syndicalist</option>
+                    <option value="radical_socialist">Radical Socialist</option>
+                    <option value="social_democrat">Social Democrat</option>
+                    <option value="social_liberal">Social Liberal</option>
+                    <option value="market_liberal">Market Liberal</option>
+                    <option value="social_conservative">Social Conservative</option>
+                    <option value="authoritarian_democrat">Authoritarian Democrat</option>
+                    <option value="paternal_autocrat">Paternal Autocrat</option>
+                    <option value="national_populist">National Populist</option>
+                </select>
+            </div>
+
+            <div class="form-group government-name-container">
+                <div class="checkbox-with-field">
+                    <label>
+                        <input type="checkbox" id="enableGovernmentName" name="enableGovernmentName">
+                        Enable Custom Government Names
+                    </label>
+                    <div class="government-name-fill-field" id="governmentNameFillField" style="display: none;">
+                        <input type="text" id="bulkGovernmentName" placeholder="Government Name" style="margin-right: 5px;">
+                        <select id="bulkGovernmentIdeology" style="margin-right: 10px;">
+                            <option value="">Select Ideology</option>
+                            <option value="totalist">Totalist</option>
+                            <option value="syndicalist">Syndicalist</option>
+                            <option value="radical_socialist">Radical Socialist</option>
+                            <option value="social_democrat">Social Democrat</option>
+                            <option value="social_liberal">Social Liberal</option>
+                            <option value="market_liberal">Market Liberal</option>
+                            <option value="social_conservative">Social Conservative</option>
+                            <option value="authoritarian_democrat">Authoritarian Democrat</option>
+                            <option value="paternal_autocrat">Paternal Autocrat</option>
+                            <option value="national_populist">National Populist</option>
+                        </select>
+                        <button type="button" id="fillAllGovernmentNamesBtn" class="btn-secondary">Fill Empty</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-with-field">
+                    <label>
+                        <input type="checkbox" id="enableLeaderFields" name="enableLeaderFields">
+                        Enable Leader Fields
+                    </label>
+                    <div class="leader-fields-fill-field" id="leaderFieldsFillField" style="display: none;">
+                        <input type="text" id="bulkLeaderName" placeholder="Leader Name" style="margin-right: 5px;">
+                        <input type="text" id="bulkLeaderPortrait" placeholder="Portrait Path" style="margin-right: 5px;">
+                        <select id="bulkLeaderIdeology" style="margin-right: 10px;">
+                            <option value="">Select Ideology</option>
+                        </select>
+                        <button type="button" id="fillAllLeaderFieldsBtn" class="btn-secondary">Fill Empty</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="generateFullCode" name="generateFullCode">
+                    Generate Full Code
+                </label>
+            </div>
+
+            <div class="json-input-section">
+                <h2>Load Country Data from JSON</h2>
+                <p class="section-description">Load country definitions from game files (format: [{"tag": "POL", "claim_state": [...], "core_state": [...]}])</p>
+                <div class="form-group">
+                    <label for="jsonFile">Select JSON File:</label>
+                    <input type="file" id="jsonFile" name="jsonFile" accept=".json,.txt">
+                </div>
+                <button type="button" id="loadJsonBtn" class="btn-secondary">Load Countries from JSON</button>
+            </div>
+
+            <div class="save-load-section">
+                <h2>Save/Load Data</h2>
+                <p class="section-description">Save your entire form configuration or load a previously saved configuration</p>
+                <div class="form-group">
+                    <button type="button" id="saveDataBtn" class="btn-secondary">Save Current Data as JSON</button>
+                </div>
+                <div class="form-group">
+                    <label for="loadDataFile">Upload JSON File to Load:</label>
+                    <input type="file" id="loadDataFile" name="loadDataFile" accept=".json,.txt">
+                </div>
+                <div class="form-group">
+                    <label for="loadDataTextarea">Or Paste JSON Data to Load:</label>
+                    <textarea id="loadDataTextarea" rows="10" placeholder="Paste your saved JSON data here..."></textarea>
+                </div>
+                <button type="button" id="loadDataBtn" class="btn-secondary">Load Data from JSON</button>
+            </div>
+
+            <div class="full-code-settings" id="fullCodeSettings">
+                <h2>Decision Category Settings</h2>
+                <div class="focus-ids-section">
+                    <div class="table-header">
+                        <h3>Required Focus IDs</h3>
+                        <button type="button" id="addFocusBtn" class="btn-secondary">Add Focus ID</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="focusIdsTable">
+                            <thead>
+                                <tr>
+                                    <th>Focus ID</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="focusIdsTableBody">
+                                <!-- Rows will be added dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popularity-settings">
+                <h2>Popularity Settings</h2>
+                <div class="popularity-container">
+                    <div class="popularity-table-section">
+                        <div class="table-header">
+                            <h3>Political Parties</h3>
+                            <button type="button" id="addPartyBtn" class="btn-secondary">Add Party</button>
+                        </div>
+                        <div class="table-container">
+                            <table id="popularityTable">
+                                <thead>
+                                    <tr>
+                                        <th>Party</th>
+                                        <th>Popularity %</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="popularityTableBody">
+                                    <!-- Rows will be added dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="total-validation">
+                            <span id="totalPopularity">Total: 0%</span>
+                            <span id="validationMessage" class="validation-message"></span>
+                        </div>
+                    </div>
+                    <div class="pie-chart-section">
+                        <h3>Popularity Preview</h3>
+                        <canvas id="popularityChart" width="300" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="countries-section">
+                <h2>Countries</h2>
+                <div id="countriesContainer">
+                    <!-- Countries will be added dynamically -->
+                </div>
+
+                <button type="button" id="addCountryBtn" class="btn-secondary">Add Country</button>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" id="generateBtn" class="btn-primary">Generate Output</button>
+                <button type="button" id="clearBtn" class="btn-secondary">Clear All</button>
+            </div>
+        </form>
+
+        <div class="output-section" id="categoryOutputSection">
+            <h2>Generated Event Category Code</h2>
+            <textarea id="categoryOutput" readonly placeholder="Generated event category code will appear here..."></textarea>
+            <button type="button" id="copyCategoryBtn" class="btn-secondary">Copy Category Code</button>
+        </div>
+
+        <div class="output-section">
+            <h2>Generated Event Code</h2>
+            <textarea id="eventOutput" readonly placeholder="Generated event code will appear here..."></textarea>
+            <button type="button" id="copyEventBtn" class="btn-secondary">Copy Event Code</button>
+        </div>
+
+        <div class="output-section">
+            <h2>Generated Localization</h2>
+            <textarea id="localizationOutput" readonly placeholder="Generated localization will appear here..."></textarea>
+            <button type="button" id="copyLocalizationBtn" class="btn-secondary">Copy Localization</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

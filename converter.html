@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOI4 State Data Converter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .convert-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .convert-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .convert-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .copy-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .copy-btn:hover {
+            background-color: #1e7e34;
+        }
+
+        .clear-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .clear-btn:hover {
+            background-color: #c82333;
+        }
+
+        .file-input-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            border: 2px dashed #dee2e6;
+            margin-bottom: 20px;
+        }
+
+        .output-section {
+            margin-top: 30px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background-color: #cce7ff;
+            color: #004085;
+            border: 1px solid #99d6ff;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .instructions {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+
+        .instructions h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+
+        .instructions ul {
+            margin-bottom: 0;
+        }
+
+        .code-example {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HOI4 State Data Converter</h1>
+
+        <div class="instructions">
+            <h3>How to Use:</h3>
+            <ul>
+                <li>Paste your cleaned HOI4 log file contents (without timestamps) into the text area below</li>
+                <li>Click "Convert to JSON" to parse the data and generate JSON</li>
+                <li>The output will be an array of country objects with claim_state and core_state arrays</li>
+                <li>Use "Copy JSON" to copy the result to clipboard</li>
+            </ul>
+            <div class="code-example">
+Example output format:
+[{tag: "AST", claim_state: [634, 737, 757], core_state: [986,285,517,518,519,520,521,987,523,636,674,985,522,988]}, ...]
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="pastedContent">Paste File Contents Here:</label>
+            <textarea id="pastedContent" placeholder="Paste your cleaned HOI4 log file contents here..." style="min-height: 300px; resize: vertical;"></textarea>
+        </div>
+
+        <div class="button-group">
+            <button id="convertBtn" class="convert-btn">Convert to JSON</button>
+            <button id="copyBtn" class="copy-btn" disabled>Copy JSON</button>
+            <button id="clearBtn" class="clear-btn">Clear</button>
+        </div>
+
+        <div id="statusMessage"></div>
+
+        <div class="output-section">
+            <label for="outputTextarea">JSON Output:</label>
+            <textarea id="outputTextarea" readonly placeholder="Converted JSON will appear here..."></textarea>
+        </div>
+    </div>
+
+    <script>
+        class HOI4Converter {
+            constructor() {
+                this.convertBtn = document.getElementById('convertBtn');
+                this.copyBtn = document.getElementById('copyBtn');
+                this.clearBtn = document.getElementById('clearBtn');
+                this.pastedContentTextarea = document.getElementById('pastedContent');
+                this.outputTextarea = document.getElementById('outputTextarea');
+                this.statusMessage = document.getElementById('statusMessage');
+
+                this.initEventListeners();
+            }
+
+            initEventListeners() {
+                this.convertBtn.addEventListener('click', () => this.convertContent());
+                this.copyBtn.addEventListener('click', () => this.copyToClipboard());
+                this.clearBtn.addEventListener('click', () => this.clearAll());
+            }
+
+            showStatus(message, type = 'info') {
+                this.statusMessage.innerHTML = `<div class="status ${type}">${message}</div>`;
+            }
+
+
+            async convertContent() {
+                const content = this.pastedContentTextarea.value.trim();
+
+                if (!content) {
+                    this.showStatus('Please load a file or paste content first', 'error');
+                    return;
+                }
+
+                this.convertBtn.disabled = true;
+                this.convertBtn.innerHTML = '<div class="loading"></div>Converting...';
+                this.showStatus('Processing content...', 'info');
+
+                try {
+                    const jsonResult = this.parseLogContents(content);
+
+                    this.outputTextarea.value = JSON.stringify(jsonResult, null, 2);
+                    this.copyBtn.disabled = false;
+                    this.showStatus(`Successfully converted ${jsonResult.length} countries!`, 'success');
+
+                } catch (error) {
+                    console.error('Conversion error:', error);
+                    this.showStatus('Error converting content: ' + error.message, 'error');
+                } finally {
+                    this.convertBtn.disabled = false;
+                    this.convertBtn.innerHTML = 'Convert to JSON';
+                }
+            }
+
+            parseLogContents(contents) {
+                const lines = contents.split('\n');
+                const countries = [];
+                let currentCountry = null;
+                let parsingSection = null; // 'claim' or 'core'
+
+                for (const line of lines) {
+                    const cleanLine = line.trim();
+
+                    // Check for country claim states start
+                    const claimMatch = cleanLine.match(/^([A-Z]{3}) claim states:$/);
+                    if (claimMatch) {
+                        if (currentCountry) {
+                            countries.push(currentCountry);
+                        }
+                        currentCountry = {
+                            tag: claimMatch[1],
+                            claim_state: [],
+                            core_state: []
+                        };
+                        parsingSection = 'claim';
+                        continue;
+                    }
+
+                    // Check for country core states start
+                    const coreMatch = cleanLine.match(/^([A-Z]{3}) core states:$/);
+                    if (coreMatch) {
+                        if (currentCountry && currentCountry.tag === coreMatch[1]) {
+                            parsingSection = 'core';
+                        }
+                        continue;
+                    }
+
+                    // Skip separator lines
+                    if (cleanLine === '--------------------------------') {
+                        continue;
+                    }
+
+                    // Parse state numbers
+                    if (currentCountry && parsingSection && /^\d+$/.test(cleanLine)) {
+                        const stateId = parseInt(cleanLine);
+                        if (parsingSection === 'claim') {
+                            currentCountry.claim_state.push(stateId);
+                        } else if (parsingSection === 'core') {
+                            currentCountry.core_state.push(stateId);
+                        }
+                    }
+                }
+
+                // Add the last country
+                if (currentCountry) {
+                    countries.push(currentCountry);
+                }
+
+                return countries;
+            }
+
+            async copyToClipboard() {
+                const text = this.outputTextarea.value;
+
+                if (!text) {
+                    this.showStatus('No content to copy', 'error');
+                    return;
+                }
+
+                try {
+                    await navigator.clipboard.writeText(text);
+                    this.showStatus('JSON copied to clipboard!', 'success');
+
+                    // Reset status after 3 seconds
+                    setTimeout(() => {
+                        this.statusMessage.innerHTML = '';
+                    }, 3000);
+                } catch (err) {
+                    // Fallback for older browsers
+                    this.outputTextarea.select();
+                    document.execCommand('copy');
+                    this.showStatus('JSON copied to clipboard!', 'success');
+
+                    setTimeout(() => {
+                        this.statusMessage.innerHTML = '';
+                    }, 3000);
+                }
+            }
+
+            clearAll() {
+                this.pastedContentTextarea.value = '';
+                this.outputTextarea.value = '';
+                this.copyBtn.disabled = true;
+                this.statusMessage.innerHTML = '';
+            }
+        }
+
+        // Initialize the converter when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.hoi4Converter = new HOI4Converter();
+        });
+    </script>
+</body>
+</html>

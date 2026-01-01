@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Release Generator 2.0 - Complete Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            overflow-x: auto;
+        }
+
+        nav li {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        nav a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #495057;
+            text-align: center;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        nav a:hover, nav a.active {
+            background: #e9ecef;
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+
+        /* Add left margin to all list items */
+        li {
+            margin-left: 20px;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h2 .icon {
+            font-size: 1.2em;
+        }
+
+        .section h3 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin: 30px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card h4 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            border: 1px solid #4a5568;
+        }
+
+        .code-block.lang-json {
+            background: #1a202c;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .warning {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        .tip {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        .workflow {
+            background: #e7f3ff;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .workflow h4 {
+            color: #2980b9;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-top: 2px;
+            transform: scale(1.2);
+        }
+
+        .checkbox-item label {
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-to-top:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 30px 20px;
+            }
+
+            header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+            }
+
+            nav li {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎭 Release Generator 2.0</h1>
+            <p>Complete Documentation & User Guide</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#getting-started">Getting Started</a></li>
+                <li><a href="#basic-setup">Basic Setup</a></li>
+                <li><a href="#countries">Countries</a></li>
+                <li><a href="#government">Government</a></li>
+                <li><a href="#leaders">Leaders</a></li>
+                <li><a href="#politics">Politics</a></li>
+                <li><a href="#decisions">Decisions</a></li>
+                <li><a href="#generation">Generation</a></li>
+                <li><a href="#save-load">Save/Load</a></li>
+                <li><a href="#advanced">Advanced</a></li>
+            </ul>
+        </nav>
+
+        <div class="content">
+            <section id="getting-started" class="section">
+                <h2><span class="icon">🚀</span> Getting Started</h2>
+                <p>The Release Generator 2.0 is a comprehensive tool for creating Hearts of Iron IV event code to establish puppet states. This tool generates properly formatted event files, localization, and decision categories.</p>
+
+                <div class="workflow">
+                    <h4>Quick Start Workflow:</h4>
+                    <ol>
+                        <li>Set your Master Country Tag and Puppet Ideology</li>
+                        <li>Add countries with their target tags and state IDs</li>
+                        <li>Configure government and leader settings (optional)</li>
+                        <li>Adjust political party popularity</li>
+                        <li>Add focus requirements (optional)</li>
+                        <li>Generate your event code</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="basic-setup" class="section">
+                <h2><span class="icon">⚙️</span> Basic Setup</h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🎯 Master Country Tag</h4>
+                        <p>The country tag of the nation that will be establishing the puppet states (e.g., "GER", "JAP", "ITA").</p>
+                        <p><strong>Example:</strong> GER for Germany</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>👑 Puppet Ideology</h4>
+                        <p>The political ideology that puppet states will adopt. This affects their ruling party and political orientation.</p>
+                        <div class="code-block">
+fascism, communism, democratic, neutrality
+                        </div>
+                        <p><strong>Impact:</strong> Determines the puppet's political system and available laws</p>
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> The puppet ideology dropdown contains all valid KX ideologies.
+                </div>
+            </section>
+
+            <section id="countries" class="section">
+                <h2><span class="icon">🌍</span> Country Management</h2>
+                <p>Each country you want to establish as a puppet needs specific configuration.</p>
+
+                <h3>🆕 Adding Countries</h3>
+                <p>Use the "Add Country" button to create new country entries. Each country has three main sections:</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🏛️ Country Info</h4>
+                        <ul>
+                            <li><strong>Target Tag:</strong> The country code for the puppet state (e.g., "POL", "CZE")</li>
+                            <li><strong>Nation Full Name:</strong> Display name for the country</li>
+                            <li><strong>State Core IDs:</strong> States where the puppet will have cores</li>
+                            <li><strong>Required State IDs:</strong> States needed for event activation</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>⚖️ State ID Types</h4>
+                        <p><strong>State Core IDs:</strong> Territories the puppet will claim as their own</p>
+                        <p><strong>Required State IDs:</strong> States your master nation or puppet must control to trigger the event</p>
+                        <div class="code-block">
+# Example:
+State Core IDs: 1,2,3,4    # Puppet gets cores here
+Required State IDs: 1,2    # Master must own these
+                        </div>
+                    </div>
+                </div>
+
+                <h3>🔧 Advanced Options</h3>
+                <div class="feature-card">
+                    <h4>"Use OR block" Checkbox</h4>
+                    <p>When checked, ONLY ONE of the required states is needed to activate the event.</p>
+
+                    <p><strong>Unchecked (Default):</strong></p>
+                    <div class="code-block">
+available = {
+    1 = { owner = { OR = { original_tag = GER is_subject_of = GER } } }
+    2 = { owner = { OR = { original_tag = GER is_subject_of = GER } } }
+    OR = {
+        1 = { NOT = { is_core_of = GER } }
+        2 = { NOT = { is_core_of = GER } }
+    }
+}
+                    </div>
+
+                    <p><strong>Checked:</strong></p>
+                    <div class="code-block">
+available = {
+    OR = {
+        1 = { owner = { OR = { original_tag = GER is_subject_of = GER } } }
+        2 = { owner = { OR = { original_tag = GER is_subject_of = GER } } }
+    }
+    OR = {
+        1 = { NOT = { is_core_of = GER } }
+        2 = { NOT = { is_core_of = GER } }
+    }
+}
+                    </div>
+                </div>
+            </section>
+
+            <section id="government" class="section">
+                <h2><span class="icon">🏛️</span> Government Settings</h2>
+                <p>Customize the puppet state's government structure and appearance.</p>
+
+                <div class="checkbox-list">
+                    <div class="checkbox-item">
+                        <input type="checkbox" checked disabled>
+                        <label>Enable Custom Government Names</label>
+                    </div>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>📝 Government Name</h4>
+                        <p>Custom name for the puppet's government (e.g., "Polish Provisional Government")</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>⚖️ Government Ideology</h4>
+                        <p>The specific ideology subtype for the government party</p>
+                        <p><strong>Contains:</strong> All HOI4 ideology subtypes organized by main ideology</p>
+                    </div>
+                </div>
+
+                <div class="warning">
+                    <strong>⚠️ Important:</strong> Government settings only appear in generated code when "Enable Custom Government Names" is checked. Otherwise, the government will not be changed at all.
+                </div>
+
+                <h3>🎯 Bulk Operations</h3>
+                <p>When government settings are enabled, a "Fill Empty" section appears for bulk operations:</p>
+                <ul>
+                    <li><strong>Government Name:</strong> Text input for bulk name assignment</li>
+                    <li><strong>Government Ideology:</strong> Dropdown for bulk ideology assignment</li>
+                    <li><strong>Fill Empty Button:</strong> Only fills fields that are currently empty</li>
+                </ul>
+            </section>
+
+            <section id="leaders" class="section">
+                <h2><span class="icon">👤</span> Leader Configuration</h2>
+                <p>Add custom leaders to your puppet states with portraits and ideologies.</p>
+
+                <div class="checkbox-list">
+                    <div class="checkbox-item">
+                        <input type="checkbox" checked disabled>
+                        <label>Enable Leader Fields</label>
+                    </div>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🏷️ Leader Name</h4>
+                        <p>The full name of the puppet state's leader</p>
+                        <p><strong>Example:</strong> "Józef Piłsudski", "Władysław Sikorski"</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🖼️ Leader Portrait Path</h4>
+                        <p>File path to the leader's portrait image</p>
+                        <div class="code-block">
+gfx/leaders/POL/Portrait_Name.png
+                        </div>
+                        <p><strong>Format:</strong> gfx/leaders/[TAG]/[Portrait_Name].png</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>💭 Leader Ideology</h4>
+                        <p>The leader's personal ideology (affects traits and decisions)</p>
+                        <p><strong>Contains:</strong> All KX leader ideology subtypes</p>
+                    </div>
+                </div>
+
+                <h3>🎯 Bulk Fill for Leaders</h3>
+                <p>Efficiently set the same values across multiple countries:</p>
+                <div class="code-block">
+# Bulk fill inputs:
+Leader Name: [text input]
+Leader Portrait: [text input]
+Leader Ideology: [dropdown selection]
+[Fill Empty Button]
+                </div>
+                <p><strong>Safety Feature:</strong> Only fills empty fields to prevent overwriting existing data</p>
+            </section>
+
+            <section id="politics" class="section">
+                <h2><span class="icon">📊</span> Political Party Popularity</h2>
+                <p>Configure the political landscape of your puppet states.</p>
+
+                <h3>📈 Popularity Settings</h3>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🎭 Political Parties</h4>
+                        <p>Adjust popularity percentages for each political ideology</p>
+                        <div class="code-block">
+syndicalist = 5
+social_democrat = 5
+social_liberal = 0
+market_liberal = 0
+social_conservative = 20
+authoritarian_democrat = 50
+paternal_autocrat = 10
+national_populist = 10
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>📊 Popularity Chart</h4>
+                        <p>Visual representation of party distribution</p>
+                        <p><strong>Validation:</strong> Total must equal 100%</p>
+                        <p><strong>Integer Values:</strong> Rounded to whole numbers</p>
+                    </div>
+                </div>
+
+                <h3>🎛️ Party Management</h3>
+                <ul>
+                    <li><strong>Add Party:</strong> Include additional political parties</li>
+                    <li><strong>Remove Party:</strong> Delete unwanted parties</li>
+                    <li><strong>Real-time Updates:</strong> Chart updates as you modify values</li>
+                    <li><strong>Validation:</strong> Ensures total equals 100%</li>
+                </ul>
+
+                <div class="tip">
+                    <strong>💡 Pro Tip:</strong> Use the popularity settings to create historically accurate or alternate history political landscapes for your puppet states.
+                </div>
+            </section>
+
+            <section id="decisions" class="section">
+                <h2><span class="icon">📋</span> Decision Categories</h2>
+                <p>Create decision categories that unlock puppet creation events.</p>
+
+                <div class="checkbox-list">
+                    <div class="checkbox-item">
+                        <input type="checkbox" checked disabled>
+                        <label>Generate Full Code</label>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🎯 Required Focus IDs</h4>
+                    <p>National focuses that must be completed before puppet creation becomes available</p>
+                    <div class="code-block">
+# Example Focus IDs:
+OTT_United_Once_More
+OTT_Egypt_Khedivate
+GER_The_Ostwall
+                    </div>
+                    <p><strong>Single Focus:</strong> Uses has_completed_focus condition</p>
+                    <p><strong>Multiple Focuses:</strong> Groups with OR = { } block</p>
+                </div>
+
+                <h3>📄 Generated Decision Category</h3>
+                <p>When "Generate Full Code" is enabled, creates a decision category file:</p>
+                <div class="code-block">
+[MASTER_TAG]_great_game = {
+    icon = GFX_decision_category_foreign_policy
+    allowed = {
+        original_tag = [MASTER_TAG]
+    }
+    visible = {
+        [FOCUS_CONDITIONS]
+    }
+}
+                </div>
+            </section>
+
+            <section id="generation" class="section">
+                <h2><span class="icon">⚡</span> Code Generation</h2>
+                <p>Generate properly formatted HOI4 event code, localization, and decision files.</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>📜 Event Code</h4>
+                        <p>Main event file with puppet creation logic</p>
+                        <p><strong>Location:</strong> /events/</p>
+                        <p><strong>Auto-resizing:</strong> Textarea expands to fit content</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🌐 Localization</h4>
+                        <p>Text strings for event names and descriptions</p>
+                        <p><strong>Location:</strong> /localisation/</p>
+                        <p><strong>Format:</strong> YAML localization files</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>📋 Decision Category</h4>
+                        <p>Unlocks the puppet creation decisions</p>
+                        <p><strong>Location:</strong> /common/decisions/categories/</p>
+                        <p><strong>Conditional:</strong> Only generated when "Generate Full Code" is enabled</p>
+                    </div>
+                </div>
+
+                <h3>🎯 Generate Output Button</h3>
+                <p>Processes all form data and generates the complete code package:</p>
+                <ul>
+                    <li><strong>Validation:</strong> Checks required fields and popularity totals</li>
+                    <li><strong>Event Generation:</strong> Creates properly formatted event code</li>
+                    <li><strong>Localization:</strong> Generates translation keys</li>
+                    <li><strong>Decision Categories:</strong> Creates unlock conditions (if enabled)</li>
+                </ul>
+
+                <div class="tip">
+                    <strong>💡 Pro Tip:</strong> The output textareas automatically resize to fit your generated content, making it easy to review long event files.
+                </div>
+            </section>
+
+            <section id="save-load" class="section">
+                <h2><span class="icon">💾</span> Save/Load Data</h2>
+                <p>Preserve your work and share configurations between sessions.</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>📤 Save Current Data</h4>
+                        <p>Exports your entire form configuration as JSON</p>
+                        <p><strong>Includes:</strong> All settings, countries, and configurations</p>
+                        <p><strong>Output:</strong> JSON in textarea + clipboard copy</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>📥 Load Data from JSON</h4>
+                        <p>Imports previously saved configurations</p>
+                        <p><strong>Restores:</strong> Complete form state and all settings</p>
+                        <p><strong>Smart Loading:</strong> Handles Select2 dropdowns and form validation</p>
+                    </div>
+                </div>
+
+                <h3>💾 Data Preservation</h3>
+                <p>The save format captures everything:</p>
+                <div class="code-block lang-json">
+{
+  "masterTag": "GER",
+  "puppetIdeology": "fascism",
+  "enableGovernmentName": true,
+  "enableLeaderFields": true,
+  "generateFullCode": false,
+  "focusIds": ["focus1", "focus2"],
+  "popularityData": [
+    {"name": "fascism", "popularity": 50}
+  ],
+  "countries": [
+    {
+      "targetTag": "POL",
+      "nationFullName": "Poland",
+      "claimStates": ["1", "2", "3"],
+      "coreStates": ["4", "5"],
+      "governmentName": "Polish Government",
+      "leaderName": "Władysław Sikorski"
+    }
+  ]
+}
+                </div>
+
+                <div class="warning">
+                    <strong>⚠️ Important:</strong> Save your work regularly! The save/load feature preserves all your configuration for later use or sharing.
+                </div>
+            </section>
+
+            <section id="advanced" class="section">
+                <h2><span class="icon">🔧</span> Advanced Features</h2>
+                <p>Powerful options for complex modding scenarios.</p>
+
+                <h3>🗂️ JSON Country Import</h3>
+                <div class="feature-card">
+                    <h4>Load Country Data from JSON</h4>
+                    <p>Import country definitions from HOI4 game files</p>
+                    <div class="code-block lang-json">
+[
+  {
+    "tag": "POL",
+    "claim_state": [1, 2, 3],
+    "core_state": [4, 5, 6]
+  }
+]
+                    </div>
+                    <p><strong>Use Case:</strong> Bulk import countries from your mod's territory definitions</p>
+                </div>
+
+                <h3>🎯 Conditional Event Logic</h3>
+                <p>Advanced available conditions based on your configuration:</p>
+
+                <div class="feature-card">
+                    <h4>Existing Puppet Check</h4>
+                    <p>Events check if target countries already exist as puppets</p>
+                    <div class="code-block">
+if = {
+    limit = {
+        POL = { exists = yes }
+    }
+    POL = { is_subject_of = GER }
+}
+                    </div>
+                </div>
+
+                <h3>🧹 Cleanup Operations</h3>
+                <p>Comprehensive state management:</p>
+                <ul>
+                    <li><strong>Core Removal:</strong> Removes cores from states that are currently the target's cores</li>
+                    <li><strong>Claim Removal:</strong> Removes claims from states that are currently claimed by the target</li>
+                    <li><strong>State Transfer:</strong> Transfers controlled states to the puppet</li>
+                    <li><strong>Autonomy Setup:</strong> Establishes colored puppet relationship</li>
+                </ul>
+
+                <h3>🎨 UI Features</h3>
+                <ul>
+                    <li><strong>Auto-resizing Textareas:</strong> Output areas expand to fit content</li>
+                    <li><strong>Visual Feedback:</strong> Real-time validation and error messages</li>
+                    <li><strong>Bulk Operations:</strong> Efficient mass editing capabilities</li>
+                    <li><strong>Responsive Design:</strong> Works on all screen sizes</li>
+                </ul>
+            </section>
+
+            <section class="section">
+                <h2><span class="icon">📚</span> Quick Reference</h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🔧 Form Controls</h4>
+                        <ul>
+                            <li><strong>Add Country:</strong> Creates new country entry</li>
+                            <li><strong>Remove (×):</strong> Deletes country entry</li>
+                            <li><strong>Clear All:</strong> Resets entire form</li>
+                            <li><strong>Generate Output:</strong> Creates event code</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>📋 Output Actions</h4>
+                        <ul>
+                            <li><strong>Copy Event Code:</strong> Copies event file content</li>
+                            <li><strong>Copy Localization:</strong> Copies translation strings</li>
+                            <li><strong>Copy Category Code:</strong> Copies decision category</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>🎯 File Locations</h4>
+                        <ul>
+                            <li><strong>Events:</strong> /events/</li>
+                            <li><strong>Localization:</strong> /localisation/</li>
+                            <li><strong>Decisions:</strong> /common/decisions/</li>
+                            <li><strong>Categories:</strong> /common/decisions/categories/</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-card">
+                        <h4>✅ Validation Rules</h4>
+                        <ul>
+                            <li><strong>Master Tag:</strong> Required</li>
+                            <li><strong>Puppet Ideology:</strong> Required</li>
+                            <li><strong>Popularity Total:</strong> Must = 100%</li>
+                            <li><strong>State IDs:</strong> Must be numbers</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <button class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</button>
+
+    <script>
+        // Smooth scrolling for navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Update active state
+                    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Highlight current section on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('nav a');
+
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

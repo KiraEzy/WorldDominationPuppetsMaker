@@ -105,6 +105,11 @@
             color: #2c3e50;
         }
 
+        .tool-card.hoi4-converter {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
         .tool-icon {
             font-size: 3em;
             margin-bottom: 15px;
@@ -209,7 +214,23 @@
                     Generate puppet state release events with custom leaders, governments, and popularity settings
                 </div>
             </a>
-            
+
+            <a href="release_generator_2.html" class="tool-card release-generator">
+                <div class="tool-icon">🎭✨</div>
+                <div class="tool-title">Release Generator 2.0</div>
+                <div class="tool-description">
+                    Enhanced version of the Release Generator with improved features and better user experience
+                </div>
+            </a>
+
+            <a href="how-to.html" class="tool-card" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); color: #1565c0;">
+                <div class="tool-icon">📚</div>
+                <div class="tool-title">Documentation</div>
+                <div class="tool-description">
+                    Comprehensive guide and documentation for all Release Generator 2.0 features
+                </div>
+            </a>
+
             <a href="state_grabber.html" class="tool-card state-grabber">
                 <div class="tool-icon">🗺️</div>
                 <div class="tool-title">State Grabber Generator</div>
@@ -225,7 +246,15 @@
                     Convert and optimize images for Hearts of Iron IV portraits and graphics
                 </div>
             </a>
-            
+
+            <a href="converter.html" class="tool-card hoi4-converter">
+                <div class="tool-icon">📊</div>
+                <div class="tool-title">HOI4 State Data Converter</div>
+                <div class="tool-description">
+                    Convert HOI4 log files to JSON format for country claim and core state data
+                </div>
+            </a>
+
             <!-- <a href="drawio_converter.html" class="tool-card drawio-converter">
                 <div class="tool-icon">📊</div>
                 <div class="tool-title">Draw.io to Mermaid Converter</div>
@@ -258,6 +287,8 @@
                 the small flag would be placed in /gfx/flags/small/YOUR_NAME.tga
                 <br>
                 8. Use the Release Generator to generate the release events for the countries, just put the countries tag in the release generator.
+                <br>
+                9. Use the HOI4 State Data Converter to convert log files containing country claim and core state data into JSON format for easier processing and analysis.
                 <br>
                 Optional: Use the Draw.io to Mermaid Converter to create documentation diagrams of your mod's political structure, event flow, or decision trees in markdown format for your GitHub repository or mod documentation.
                 If you are generating for the first time, make sure to check the "Generate Full Code" checkbox.
