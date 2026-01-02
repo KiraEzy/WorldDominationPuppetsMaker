@@ -336,6 +336,9 @@ class CountryFormatter {
         `;
 
         this.countriesContainer.appendChild(countryDiv);
+
+        // Initialize the leader ideology select dropdown
+        this.initializeLeaderIdeologySelect(countryId);
     }
 
     removeCountry(countryId) {
@@ -711,15 +714,6 @@ ${leaderName && leaderPortrait && leaderIdeology ? `
 \t\t\t\t}
 \t\t\t}` : ''}
 
-\t\t\tset_popularities = {
-${this.generatePopularitiesBlock()}
-\t\t\t}
-${enableGovernmentName ? `\t\t\tset_party_name = {
-\t\t\t\tideology = ${governmentIdeology || 'paternal_autocrat'}
-\t\t\t\tname = "${governmentName}"
-\t\t\t\tlong_name = "${governmentName}"
-\t\t\t}` : ''}
-
 \t\t\t${masterTag} = {
 \t\t\t\tset_autonomy = {
 \t\t\t\t\ttarget = ${targetTag}
@@ -731,6 +725,16 @@ ${enableGovernmentName ? `\t\t\tset_party_name = {
 \t\t\t\truling_party = ${puppetIdeology}
 \t\t\t\telections_allowed = no
 \t\t\t}
+
+
+\t\t\tset_popularities = {
+${this.generatePopularitiesBlock()}
+\t\t\t}
+${enableGovernmentName ? `\t\t\tset_party_name = {
+\t\t\t\tideology = ${governmentIdeology || 'paternal_autocrat'}
+\t\t\t\tname = "${governmentName}"
+\t\t\t\tlong_name = "${governmentName}"
+\t\t\t}` : ''}
 \t\t}
 \t}
 }`;
@@ -928,8 +932,9 @@ ${enableGovernmentName ? `\t\t\tset_party_name = {
     }
 
     loadIdeologyData() {
-        // Embedded ideology data to avoid CORS issues with local file access
-        this.ideologyData = [{
+        try {
+            // Embedded ideology data to avoid CORS issues with local file access
+            this.ideologyData = [{
             "totalist": ["totalist_subtype","natsynd_subtype","authcom_subtype","sorelianism_subtype","national_communism_subtype","technocratic_socialism_subtype","georgian_socialism_subtype","mladorossi_subtype","autocratic_socialist_subtype","red_junta_subtype","caponism_subtype","juche_subtype","molotovism_subtype","obammunism_subtype","esoteric_leninism_subtype","tot_afrofuture_subtype","left_townerism_subtype","popcom_subtype","tot_left_panafricanism_subtype","tot_authentice_subtype","jacobinism_subtype","hoxhaism_subtype","ultra_hoxhaism_subtype","tot_paneuropeanism_subtype","totalist_savinkovism_subtype","heat_miserism_subtype","commie_elfism_subtype","fitzhughism_subtype","social_futurism_subtype","militant_atheism_subtype","technocracy_subtype","maximato_subtype","tot_developing_leftism_subtype","richytskyi_thought_subtype","anarcho_pastoralism_subtype","tot_tridemism_subtype","tot_leftcraftism_subtype","hardliner_bolshevism_subtype","red_ustase_subtype","tot_mexicayotlism_subtype","tot_kadroism_subtype","socialist_security_state_subtype","william_foster_thought_subtype","anarcho_bolshevism_subtype","pan_somalism_subtype","lovestoneism_subtype","volkisch_communitarianism_subtype","internationalism_subtype","corn_communism_subtype","tot_right_panafricanism_subtype","machiavellian_socialism_subtype","burnhamite_thought_subtype","tot_anarcho_communism_subtype","comrades_coast_subtype","tot_illegalism_subtype","tot_red_cossack_dictatorship_subtype","tot_islamic_socialism_subtype","socialist_feminism_subtype","neo_socialism_subtype","tot_bahai_universalism_subtype","broad_communism_subtype","tot_negritude_subtype","tot_noirism_subtype","mariateguismo_subtype","bordigism_subtype","christian_communism_subtype","tot_italian_left_futurism_subtype","tot_reformed_natsynd_subtype","massimalismo_subtype","tot_social_credit_subtype","tot_nkrumaism_subtype","tot_kleptocracy_subtype","national_jacobinism_subtype","tot_agrarian_socialism_subtype","tot_market_socialist_subtype","tot_bukharinist_subtype","tot_euro_panafricanism_subtype","tot_left_nationalism_subtype","british_maximism_subtype","left_boulangism_subtype","zinovievism_subtype","council_communism_subtype","peasant_charterism_subtype","waisi_movement_subtype","evidentist_technocracy_subtype","arab_ihya_subtype","lindholmism_subtype","tot_clientelism_subtype","cargo_cult_subtype","tot_macianismo_subtype","tot_matswanism_subtype"],
             "syndicalist": ["syndicalist_subtype","anarcho_syndicalist_subtype","feminist_syndicalist_subtype","syn_afrofuture_subtype","syn_left_panafricanism_subtype","syn_fascism_subtype","african_syndicalism_subtype","liberalized_syndicalism_subtype","centralized_syndicalism_subtype","democratic_syndicalism_subtype","agrarian_syndicalism_subtype","de_leonism_subtype","syn_georgism_subtype","eco_syndicalism_subtype","syn_developing_leftism_subtype","esperanto_syndicalism_subtype","syn_mexicayotlism_subtype","syn_islamic_socialism_subtype","syn_buddhist_socialism_subtype","syn_internationalism_subtype","syn_esoteric_leninism_subtype","syn_cowboy_communalism_subtype","syn_comrades_coast_subtype","syn_kleptocracy_subtype","syn_illegalism_subtype","syn_caponism_subtype","syn_noirism_subtype","syn_bahai_universalism_subtype","syn_negritude_subtype","syn_mariateguismo_subtype","christian_syndicalism_subtype","reformed_natsynd_subtype","syn_nkrumaism_subtype","modernismo_nicaraguense_subtype","syn_radical_progressivism_subtype","syn_euro_panafricanism_subtype","syn_tridemism_subtype","syn_anarchism_subtype","syn_left_nationalism_subtype","syn_teetotalism_subtype","yellow_syndicalism_subtype","syn_kotahitanga_subtype","aboriginal_garveyism_subtype","syn_gandhism_subtype","syn_anarcho_communism_subtype","libertarian_possibilism_subtype","anarcho_abertzalism_subtype","syn_sandinismo_subtype","syn_utopian_technocracy_subtype","syn_broad_communism_subtype","syn_popcom_subtype","syn_council_communism_subtype","syn_matswanism_subtype","syn_guild_socialism_subtype","anthropophagic_movement_subtype","syn_technocratic_socialism_subtype","syn_mutualism_subtype","syn_individualist_anarchism_subtype","syn_clientelism_subtype","syn_bukharinist_subtype","syn_italian_left_futurism_subtype","syn_hardliner_bolshevism_subtype","syn_revolutionary_bolivarianism_subtype","syn_police_state_subtype"],
             "radical_socialist": ["radical_socialist_subtype","christian_socialism_subtype","anarchism_subtype","agrarian_socialism_subtype","monsoc_subtype","moderate_socialist_subtype","market_socialist_subtype","fascism_subtype","radical_progressivism_subtype","radsoc_left_panafricanism_subtype","radsoc_kimbanguism_subtype","radsoc_austromarxism_subtype","alcoholism_subtype","radsoc_red_junta_subtype","radsoc_anarcho_syndicalist_subtype","illegalism_subtype","moderate_obammunism_subtype","radsoc_communism_subtype","radsoc_national_communism_subtype","zhdanovism_subtype","radsoc_tridemism_subtype","left_eurasianism_subtype","bellamyism_subtype","eco_anarchism_subtype","sandinismo_subtype","left_nationalism_subtype","apartheid_socialism_subtype","radsoc_indigenous_communitarianism_subtype","developing_leftism_subtype","mexicayotlism_subtype","leftcraftism_subtype","narodism_subtype","utopian_technocracy_subtype","quaker_socialism_subtype","radsoc_popular_patriotism_subtype","islamic_socialism_subtype","buddhist_socialism_subtype","radsoc_pan_somalism_subtype","eco_socialism_subtype","frontier_socialism_subtype","social_hiveism_subtype","bukharinist_subtype","radsoc_hoahaoism_subtype","radsoc_coconut_subtype","radsoc_internationalism_subtype","radsoc_caodaism_subtype","radsoc_esoteric_leninism_subtype","radsoc_machiavellian_socialism_subtype","cowboy_communalism_subtype","anarcho_communism_subtype","radsoc_comrades_coast_subtype","radsoc_popcom_subtype","radsoc_kleptocracy_subtype","radsoc_caponism_subtype","red_cossack_dictatorship_subtype","radsoc_socialist_feminism_subtype","radsoc_revisionist_marxism_subtype","bahai_universalism_subtype","negritude_subtype","radsoc_noirism_subtype","radsoc_mariateguismo_subtype","radsoc_liberal_socialism_subtype","christian_anarchism_subtype","radsoc_georgism_subtype","italian_left_futurism_subtype","radsoc_colonial_govt_subtype","radsoc_de_leonism_subtype","radsoc_humanistic_capitalism_subtype","radsoc_social_credit_subtype","jermanism_subtype","nkrumaism_subtype","vardamanism_subtype","radsoc_paneuropeanism_subtype","gandhism_subtype","market_leninism_subtype","soltangalievism_subtype","euro_panafricanism_subtype","revolutionary_bolivarianism_subtype","radsoc_clientelism_subtype","radsoc_paternal_socialism_subtype","radsoc_yellow_syndicalism_subtype","left_carlism_subtype","radsoc_syndicalist_subtype","radsoc_jeffersonianism_subtype","radsoc_kritarchy_subtype","laborismo_esperantista_subtype","radsoc_council_communism_subtype","matswanism_subtype","francoism_subtype","radsoc_guild_socialism_subtype","saavedrista_republicanism_subtype","mutualism_subtype","individualist_anarchism_subtype","radsoc_cargo_cult_subtype","radsoc_macianismo_subtype","malthusianism_subtype"],
@@ -941,14 +946,65 @@ ${enableGovernmentName ? `\t\t\tset_party_name = {
             "paternal_autocrat": ["paternal_autocrat_subtype","junta_subtype","theocracy_subtype","absolute_monarchy_subtype","red_tinted_autocracy_subtype","corporatocracy_subtype","pataut_ancap_subtype","jacksonianism_subtype","autocratic_colonial_govt_subtype","pataut_warlordism_subtype","pataut_cossack_subtype","neo_feudalism_subtype","pataut_afrofuture_subtype","kleptocracy_subtype","pataut_longism_subtype","pataut_right_panafricanism_subtype","pataut_kimbanguism_subtype","crime_syndicate_subtype","pataut_christian_democracy_subtype","hussitism_subtype","snow_miserism_subtype","grinchism_subtype","pataut_authoritarian_liberalism_subtype","pataut_pan_asianism_subtype","pataut_ukrainian_conservatism_subtype","pataut_bonapartism_subtype","pataut_boer_nationalism_subtype","caudillo_populism_subtype","pataut_tribal_chiefdom_subtype","pataut_baltic_christianity_subtype","pataut_clientelism_subtype","pataut_washingtonism_subtype","right_technocracy_subtype","austropopulism_subtype","revolution_nationale_subtype","neo_porfiriatoismo_subtype","bolivarianism_subtype","pataut_belgicism_subtype","flemish_nationalism_subtype","pataut_legionarism_subtype","pataut_pan_somalism_subtype","pataut_islamism_subtype","social_credit_subtype","pirate_republic_subtype","pataut_diemism_subtype","pataut_kotahitanga_subtype","pataut_coconut_subtype","pataut_national_conservative_subtype","roerichism_subtype","pataut_hispanism_subtype","pataut_popular_patriotism_subtype","carlism_subtype","pataut_minarchism_subtype","pataut_right_georgism_subtype","pataut_caponism_subtype","pataut_right_syndicalism_subtype","gaullism_subtype","pataut_theosophy_subtype","laurismo_subtype","neoborbonismo_subtype","pataut_oligarchy_subtype","yugoslavism_subtype","rocquisme_subtype","scientific_monarchism_subtype","pataut_pelleyism_subtype","pataut_hearstian_democracy_subtype","pataut_occultism_subtype","pataut_volkism_subtype","elective_monarchy_subtype","pataut_qadhimism_subtype","pataut_czech_national_democracy_subtype","pan_netherlandism_subtype","pataut_savinkovism_subtype","spectral_state_subtype","pataut_kritarchy_subtype","poujadisme_subtype","pataut_tridemism_subtype","pataut_security_state_subtype","pataut_synarchism_subtype","pataut_maurism_subtype","integrism_subtype","pataut_maurrassism_subtype","pataut_toryism_subtype","pataut_agrarianism_subtype","pataut_iberian_federalism_subtype","pataut_solidarism_subtype","terrismo_subtype","nuevo_ideal_nacional_subtype","pataut_conservative_feminism_subtype","duplessism_subtype","chosid_nyi_subtype","metaxism_subtype","yan_xishan_thought_subtype","vapsism_subtype","universism_subtype","getulismo_subtype","christian_crusade_subtype","pataut_scandinavism_subtype","pataut_gustavianism_subtype","pataut_police_state_subtype","socialismo_militar_subtype","pataut_trujillato_subtype","imaginism_subtype","pataut_hilozoismo_subtype","pataut_paneuropeanism_subtype","pataut_popularism_subtype"],
             "national_populist": ["national_populist_subtype","integralism_subtype","fundementalism_subtype","militarism_subtype","savinkovism_subtype","solidarism_subtype","scythianism_subtype","legionarism_subtype","lovecraftianism_subtype","natpop_true_whigs_subtype","occultism_subtype","natpop_corporatocracy_subtype","pioism_subtype","natpop_warlordism_subtype","authentice_subtype","merc_subtype","natpop_afrofuture_subtype","klan_nationalism_subtype","goering_loyalism_subtype","townerism_subtype","right_syndicalism_subtype","national_basedism_subtype","natpop_right_panafricanism_subtype","natpop_kimbanguism_subtype","ariosophy_subtype","volkism_subtype","natpop_paneuropeanism_subtype","national_radicalism_subtype","mathengeism_subtype","toy_santaism_subtype","national_restorationism_subtype","natpop_bonapartism_subtype","natpop_boer_nationalism_subtype","natpop_tribal_chiefdom_subtype","baltic_christianity_subtype","ukrainian_nationalism_subtype","crnogoroslavlje_subtype","maurrassism_subtype","kadroism_subtype","belgicism_subtype","autentico_subtype","natpop_bolivarianism_subtype","tseghakronism_subtype","rexism_subtype","natpop_flemish_nationalism_subtype","natpop_popular_patriotism_subtype","reformed_belgicism_subtype","natpop_pan_somalism_subtype","vasconcelosismo_subtype","natpop_volkisch_communitarianism_subtype","wandervogel_subtype","natpop_pan_asianism_subtype","caodaism_subtype","coconut_subtype","hoahaoism_subtype","hispanism_subtype","natpop_roerichism_subtype","anarcho_totalitarianism_subtype","natpop_neo_feudalism_subtype","natpop_carlism_subtype","british_israelism_subtype","nordicism_subtype","leopardism_subtype","national_maximalism_subtype","natpop_islamism_subtype","black_hebrew_israelism_subtype","islamic_black_nationalism_subtype","moorish_science_temple_subtype","nation_of_islam_subtype","scientology_subtype","spiritualism_subtype","monopolized_anarchism_subtype","natpop_pirate_republic_subtype","natpop_indigenous_communitarianism_subtype","noirism_subtype","ethereal_noirism_subtype","theosophy_subtype","natpop_kleptocracy_subtype","natpop_revolution_nationale_subtype","sicilianism_subtype","natpop_yugoslavism_subtype","italian_right_futurism_subtype","italian_legionarism_subtype","natpop_social_credit_subtype","natpop_colonial_govt_subtype","national_security_state_subtype","dionysian_yoga_subtype","synarchism_subtype","burkhanism_subtype","natpop_pan_netherlandism_subtype","god_knowers_subtype","neokonservatismus_subtype","natpop_agrarianism_subtype","panchayat_system_subtype","natpop_militant_atheism_subtype","natpop_kritarchy_subtype","neo_maurrassism_subtype","lepenisme_subtype","natpop_poujadisme_subtype","natpop_humanisme_integral_subtype","natpop_tridemism_subtype","natpop_integrism_subtype","liberating_nationalism_subtype","natpop_conservative_feminism_subtype","nacionalismo_subtype","natpop_chosid_nyi_subtype","natpop_national_conservative_subtype","natpop_tribal_councilism_subtype","shintaisei_subtype","consistent_way_subtype","taarausk_subtype","neo_rexurdimento_subtype","natpop_universism_subtype","pan_iranism_subtype","phalangism_subtype","syrian_social_nationalism_subtype","cultured_magic_subtype","evolian_thought_subtype","kryvianism_subtype","natpop_oligarchy_subtype","muertismo_subtype","hindutva_subtype","korpelaism_subtype","natpop_scandinavism_subtype","socialist_falange_subtype","natpop_vapsism_subtype","trujillato_subtype","nacismo_subtype","lapuanliike_subtype","natpop_regionalism_subtype","great_way_subtype","riksvitalism_subtype","tagarab_theology_subtype","natpop_macianismo_subtype","misteryism_subtype","hilozoismo_subtype","natpop_right_technocracy_subtype","natpop_austropopulism_subtype","credo_legionario_subtype"]
         }];
-        console.log('Ideology data loaded from embedded data');
+        
+        // Verify data was loaded correctly
+        if (!this.ideologyData || !Array.isArray(this.ideologyData) || this.ideologyData.length === 0) {
+            console.error('Failed to load ideology data: Invalid data structure');
+            this.ideologyData = null;
+            return;
+        }
+        
+        const data = this.ideologyData[0];
+        if (!data || typeof data !== 'object') {
+            console.error('Failed to load ideology data: Invalid data object');
+            this.ideologyData = null;
+            return;
+        }
+        
+        const ideologyCount = Object.keys(data).length;
+        const totalSubtypes = Object.values(data).reduce((sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0), 0);
+        console.log(`Ideology data loaded successfully: ${ideologyCount} main ideologies with ${totalSubtypes} total subtypes`);
+        } catch (error) {
+            console.error('Error loading ideology data:', error);
+            this.ideologyData = null;
+        }
+    }
+
+    // Method to reinitialize all leader ideology selects (useful for debugging)
+    reinitializeAllLeaderIdeologySelects() {
+        console.log('Reinitializing all leader ideology selects...');
+        const allSelects = document.querySelectorAll('select[id^="leaderIdeology_"]');
+        console.log(`Found ${allSelects.length} leader ideology selects`);
+        
+        allSelects.forEach(select => {
+            const id = select.id;
+            const countryId = id.replace('leaderIdeology_', '');
+            this.initializeLeaderIdeologySelect(countryId);
+        });
     }
 
     initializeBulkLeaderIdeologySelect() {
         const selectElement = document.getElementById('bulkLeaderIdeology');
-        if (!selectElement || !this.ideologyData) return;
+        if (!selectElement) {
+            console.error('Bulk leader ideology select element not found');
+            return;
+        }
+
+        // Ensure ideology data is loaded
+        if (!this.ideologyData || !Array.isArray(this.ideologyData) || this.ideologyData.length === 0) {
+            console.error('Ideology data not loaded. Attempting to reload...');
+            this.loadIdeologyData();
+            if (!this.ideologyData || !Array.isArray(this.ideologyData) || this.ideologyData.length === 0) {
+                console.error('Failed to load ideology data');
+                return;
+            }
+        }
 
         const data = this.ideologyData[0]; // The JSON has an array with one object
+        if (!data || typeof data !== 'object') {
+            console.error('Invalid ideology data structure');
+            return;
+        }
 
         // Clear existing options except the placeholder
         selectElement.innerHTML = '<option value="">Select Ideology</option>';
@@ -958,12 +1014,14 @@ ${enableGovernmentName ? `\t\t\tset_party_name = {
             const optgroup = document.createElement('optgroup');
             optgroup.label = mainIdeology.charAt(0).toUpperCase() + mainIdeology.slice(1).replace(/_/g, ' ');
 
-            data[mainIdeology].forEach(subtype => {
-                const option = document.createElement('option');
-                option.value = subtype;
-                option.textContent = subtype.replace(/_/g, ' ');
-                optgroup.appendChild(option);
-            });
+            if (Array.isArray(data[mainIdeology])) {
+                data[mainIdeology].forEach(subtype => {
+                    const option = document.createElement('option');
+                    option.value = subtype;
+                    option.textContent = subtype.replace(/_/g, ' ');
+                    optgroup.appendChild(option);
+                });
+            }
 
             selectElement.appendChild(optgroup);
         });
@@ -975,33 +1033,55 @@ ${enableGovernmentName ? `\t\t\tset_party_name = {
     }
 
     initializeLeaderIdeologySelect(countryId) {
-        const selectElement = document.getElementById(`leaderIdeology_${countryId}`);
-        if (!selectElement || !this.ideologyData) return;
+        // Small delay to ensure DOM element is ready (since it's called right after appendChild)
+        setTimeout(() => {
+            const selectElement = document.getElementById(`leaderIdeology_${countryId}`);
+            if (!selectElement) {
+                console.error(`Leader ideology select element not found for country ${countryId}`);
+                return;
+            }
 
-        const data = this.ideologyData[0]; // The JSON has an array with one object
+            // Ensure ideology data is loaded
+            if (!this.ideologyData || !Array.isArray(this.ideologyData) || this.ideologyData.length === 0) {
+                console.error('Ideology data not loaded. Attempting to reload...');
+                this.loadIdeologyData();
+                if (!this.ideologyData || !Array.isArray(this.ideologyData) || this.ideologyData.length === 0) {
+                    console.error('Failed to load ideology data');
+                    return;
+                }
+            }
 
-        // Clear existing options except the placeholder
-        selectElement.innerHTML = '<option value="">Select Ideology</option>';
+            const data = this.ideologyData[0]; // The JSON has an array with one object
+            if (!data || typeof data !== 'object') {
+                console.error('Invalid ideology data structure');
+                return;
+            }
 
-        // Add options grouped by main ideology
-        Object.keys(data).forEach(mainIdeology => {
-            const optgroup = document.createElement('optgroup');
-            optgroup.label = mainIdeology.charAt(0).toUpperCase() + mainIdeology.slice(1).replace(/_/g, ' ');
+            // Clear existing options except the placeholder
+            selectElement.innerHTML = '<option value="">Select Ideology</option>';
 
-            data[mainIdeology].forEach(subtype => {
-                const option = document.createElement('option');
-                option.value = subtype;
-                option.textContent = subtype.replace(/_/g, ' ');
-                optgroup.appendChild(option);
+            // Add options grouped by main ideology
+            Object.keys(data).forEach(mainIdeology => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = mainIdeology.charAt(0).toUpperCase() + mainIdeology.slice(1).replace(/_/g, ' ');
+
+                if (Array.isArray(data[mainIdeology])) {
+                    data[mainIdeology].forEach(subtype => {
+                        const option = document.createElement('option');
+                        option.value = subtype;
+                        option.textContent = subtype.replace(/_/g, ' ');
+                        optgroup.appendChild(option);
+                    });
+                }
+
+                selectElement.appendChild(optgroup);
             });
 
-            selectElement.appendChild(optgroup);
-        });
-
-        // Add change event listener for native select
-        selectElement.addEventListener('change', function() {
-            // Optional: Add custom behavior here if needed
-        });
+            // Add change event listener for native select
+            selectElement.addEventListener('change', function() {
+                // Optional: Add custom behavior here if needed
+            });
+        }, 0); // Use 0ms timeout to defer to next event loop cycle
     }
 
     fillAllGovernmentNames() {
